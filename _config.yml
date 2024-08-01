@@ -21,7 +21,7 @@ repository               : "stevenyangyj/stevenyangyj.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "Yijun_YANG.jpg"
+  avatar           : "Yijun_YANG.png"
   name             : "Yijun Yang"
   pronouns         : # example: "she/her"  
   bio              : "Short biography for the left-hand sidebar"
