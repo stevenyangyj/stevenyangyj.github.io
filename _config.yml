@@ -25,8 +25,8 @@ author:
   name             : "Yijun Yang"
   pronouns         : # example: "she/her"  
   bio              : "Ph.D. of Computer Science"
-  location         : "Sydney, NSW, AUS"
-  employer         : "University of Technology Sydeny"
+  location         : "Shenzhen, Guangdong, CHN"
+  employer         : "Tencent"
   uri              : # URL
   email            : "yijun.steven.yang@gmail.com" 
 
@@ -244,14 +244,14 @@ defaults:
   #     share: true
   #     comments: true
   # _publications
-  - scope:
-      path: ""
-      type: publications
-    values:
-      layout: single
-      author_profile: true
-      share: true
-      comments: true
+  # - scope:
+  #     path: ""
+  #     type: publications
+  #   values:
+  #     layout: single
+  #     author_profile: true
+  #     share: true
+  #     comments: true
   # _portfolio
   # - scope:
   #     path: ""
