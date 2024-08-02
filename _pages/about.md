@@ -16,9 +16,9 @@ My recent research focuses on training generalist AI agents in complex environme
 I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-engineering-and-information-technology/computer-science) from the [University of Technology Sydney (UTS)](https://www.uts.edu.au/), where I was an active member of the research group led by [Prof. Chengqi Zhang](https://profiles.uts.edu.au/Chengqi.Zhang). During my academic journey, I have closely collaborated with [Prof. Tianyi Zhou](https://tianyizhou.github.io/) from the [University of Maryland, College Park](https://www.umd.edu/). 
 I gained valuable industry experience as a research intern at JD Explore Academy, under the mentorship of [Prof. Li Shen](https://sites.google.com/site/mathshenli/home) from Sun Yat-sen University, and within the team led by [Prof. Xiaodong He](https://scholar.google.com/citations?user=W5WbqgoAAAAJ&hl=en). I also contributed to the development of advanced text/audio-to-video generation models as a research intern at [Tencent Hunyuan](https://hunyuan.tencent.com/), working under the guidance of [Dr. Wei Liu](https://scholar.google.com/citations?user=AjxoEpIAAAAJ&hl=en). You are welcome to see more details in my CV: [English](../assets/cv.pdf) and [中文](../assets/杨一君简历-无个人信息.pdf).
 
-<font color=red> I am open to collaboration and discussion. Please reach out if you are interested. </font>
+- <font color=red> I am open to collaboration and discussion. Please reach out if you are interested. </font>
 
-📑 Selected papers
+Selected papers
 =======
 
 Other papers can be found on my [Google Scholar page](https://scholar.google.com/citations?user=X0quXnsAAAAJ&hl=en).
