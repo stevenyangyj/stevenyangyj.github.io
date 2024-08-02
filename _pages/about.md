@@ -1,13 +1,22 @@
 ---
 permalink: /
-title: "Academic Pages is a ready-to-fork GitHub Pages template for academic personal websites"
+title: "Biography"
+excerpt: "About me"
 author_profile: true
 redirect_from: 
   - /about/
   - /about.html
 ---
 
-This is the front page of a website that is powered by the [Academic Pages template](https://github.com/academicpages/academicpages.github.io) and hosted on GitHub pages. [GitHub pages](https://pages.github.com) is a free service in which websites are built and hosted from code and data stored in a GitHub repository, automatically updating when a new commit is made to the respository. This template was forked from the [Minimal Mistakes Jekyll Theme](https://mmistakes.github.io/minimal-mistakes/) created by Michael Rose, and then extended to support the kinds of content that academics have: publications, talks, teaching, a portfolio, blog posts, and a dynamically-generated CV. You can fork [this repository](https://github.com/academicpages/academicpages.github.io) right now, modify the configuration and markdown files, add your own PDFs and other content, and have your own site for free, with no ads! An older version of this template powers my own personal website at [stuartgeiger.com](http://stuartgeiger.com), which uses [this Github repository](https://github.com/staeiou/staeiou.github.io).
+I am a research scientist at [Tencent AI Lab](https://ai.tencent.com/ailab/en/index). My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published [multiple papers](https://scholar.google.com/citations?user=X0quXnsAAAAJ&hl=en) at top-tier AI/ML venues such as ICML, ICLR, CVPR, IJCAI, etc. 
+<!-- I am the recipient of the [Best Student Paper Award at ICDM 2013](https://tianyizhou.files.wordpress.com/2010/08/dca-paper.pdf) and the [2020 IEEE TCSC Most Influential Paper Award](http://www.icml-2011.org/papers/41_icmlpaper.pdf). -->
+
+My recent research focuses on training generalist AI agents in complex environments through reinforcement and imitation learning, leveraging the rich prior knowledge from pretrained foundation models such as LLMs, VLMs, and video generation models. A highlight of my recent work has been featured by [MIT Technology Review China](https://www.mittrchina.com/news/detail/13249).
+
+I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-engineering-and-information-technology/computer-science) from the [University of Technology Sydney (UTS)](https://www.uts.edu.au/), where I was an active member of the research group led by [Prof. Chengqi Zhang](https://profiles.uts.edu.au/Chengqi.Zhang). During my academic journey, I have closely collaborated with [Prof. Tianyi Zhou](https://tianyizhou.github.io/) from the [University of Maryland, College Park](https://www.umd.edu/). 
+I gained valuable industry experience as a research intern at JD Explore Academy, under the mentorship of [Prof. Li Shen](https://sites.google.com/site/mathshenli/home) from Sun Yat-sen University, and within the team led by [Prof. Xiaodong He](https://scholar.google.com/citations?user=W5WbqgoAAAAJ&hl=en). I also contributed to the development of advanced text/audio-to-video generation models as a research intern at [Tencent Hunyuan](https://hunyuan.tencent.com/), working under the guidance of [Dr. Wei Liu](https://scholar.google.com/citations?user=AjxoEpIAAAAJ&hl=en).
+
+<!-- This is the front page of a website that is powered by the [Academic Pages template](https://github.com/academicpages/academicpages.github.io) and hosted on GitHub pages. [GitHub pages](https://pages.github.com) is a free service in which websites are built and hosted from code and data stored in a GitHub repository, automatically updating when a new commit is made to the respository. This template was forked from the [Minimal Mistakes Jekyll Theme](https://mmistakes.github.io/minimal-mistakes/) created by Michael Rose, and then extended to support the kinds of content that academics have: publications, talks, teaching, a portfolio, blog posts, and a dynamically-generated CV. You can fork [this repository](https://github.com/academicpages/academicpages.github.io) right now, modify the configuration and markdown files, add your own PDFs and other content, and have your own site for free, with no ads! An older version of this template powers my own personal website at [stuartgeiger.com](http://stuartgeiger.com), which uses [this Github repository](https://github.com/staeiou/staeiou.github.io).
 
 A data-driven personal website
 ======
@@ -46,4 +55,4 @@ Example: editing a markdown file for a talk
 
 For more info
 ------
-More info about configuring Academic Pages can be found in [the guide](https://academicpages.github.io/markdown/). The [guides for the Minimal Mistakes theme](https://mmistakes.github.io/minimal-mistakes/docs/configuration/) (which this theme was forked from) might also be helpful.
+More info about configuring Academic Pages can be found in [the guide](https://academicpages.github.io/markdown/). The [guides for the Minimal Mistakes theme](https://mmistakes.github.io/minimal-mistakes/docs/configuration/) (which this theme was forked from) might also be helpful. -->
