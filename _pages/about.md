@@ -18,7 +18,9 @@ I gained valuable industry experience as a research intern at JD Explore Academy
 
 <font color=red> I am open to collaboration and discussion. Please reach out if you are interested. </font>
 
-# Selected papers
+📑 Selected papers
+=======
+
 Other papers can be found on my [Google Scholar page](https://scholar.google.com/citations?user=X0quXnsAAAAJ&hl=en).
 
 1. Yijun Yang, Tianyi Zhou, Kanxue Li, Dapeng Tao, Lusong Li, Li Shen, Xiaodong He, Jing Jiang, and Yuhui Shi. "***Embodied Multi-Modal Agent trained by an LLM from a Parallel TextWorld***", IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024. [[PDF]](https://arxiv.org/pdf/2311.16714), [[CODE]](https://github.com/stevenyangyj/Emma-Alfworld)
