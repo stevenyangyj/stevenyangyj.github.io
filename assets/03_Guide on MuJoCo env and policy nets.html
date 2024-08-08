@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>03_Guide on MuJoCo env and policy nets.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<pre class="hljs"><code><div><span class="hljs-comment"># import the packages we need</span>
+<span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+<span class="hljs-keyword">from</span> torch.distributions.normal <span class="hljs-keyword">import</span> Normal
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> gym
+</div></code></pre>
+<h1 id="introduction-on-the-agent-environment-interaction">Introduction on the agent-environment interaction</h1>
+<div>
+<img src=https://lh3.googleusercontent.com/QldTtbRsI_3DA4tHh6eflqm5D_PvpCG4a1Umd5QWNdh-bMWlrYBMqN_vGvt5Tf0TXe0FoXD0GzsxrQzhLRdq0oZHqu8ktxBIUEUfkQ=w1440 width=50%/>
+</div>
+<div>
+<img src=https://tse1-mm.cn.bing.net/th/id/R-C.075c3959fdd19774a59fdfb996e57af3?rik=AI8LOqDlAWBLgQ&riu=http%3a%2f%2fimages.cnitblog.com%2fblog%2f489049%2f201401%2f132312526273.jpg&ehk=13ufDqGsnL3UokQl8JiJMDh7BRmmiLI88GsOx39PUk4%3d&risl=&pid=ImgRaw&r=0 width=45%/>
+</div>
+<p><strong>State: $s_{t}$; Action: $a_{t}$; Reward function: $r(s_{t},a_{t})$.</strong></p>
+<p>By interaction with environment, we will have a trajectory (Markov chain): $s_{0}, a_{0}, r_{0}, s_{1}, a_{1}, r_{1}, s_{2}, a_{2}, r_{2},\dots,s_{t}, a_{t}, r_{t}, s_{t+1},\dots$</p>
+<p>$\pi^{*}=\arg\max_{\pi}\sum_{t=0}^{\infty}\gamma^{t}r(s_{t},a_{t})$ where $\gamma\in(0,1)$.</p>
+<h1 id="1-lets-build-the-environment-using-gym">1. Let's build the environment using gym</h1>
+<pre class="hljs"><code><div><span class="hljs-comment"># make halfcheetah env.</span>
+env = gym.make(<span class="hljs-string">"HalfCheetah-v3"</span>)
+</div></code></pre>
+<div>
+<img src=https://tse1-mm.cn.bing.net/th/id/R-C.672ae65644c91f81c1606fc235f03674?rik=bub%2fascUJSV8kQ&riu=http%3a%2f%2fwww.tomhenighan.com%2fimages%2fppo_halfcheetah_compressed.gif&ehk=ozCvXAOQDK2wWrOq7E1rqBjU%2b09Gmlay0a8D6h3BQPo%3d&risl=&pid=ImgRaw&r=0 width=40%/>
+</div>
+<h2 id="how-to-represent-the-state-st-action-at-and-reward-function-rstat-to-make-the-task-tractable">How to represent the state $s_{t}$, action $a_{t}$ and reward function $r(s_{t},a_{t})$ to make the task tractable?</h2>
+<pre class="hljs"><code><div>init_state = env.reset()
+print(init_state)
+print(<span class="hljs-string">'The length of vector is '</span>, len(init_state))
+</div></code></pre>
+<pre><code>[-0.0788925   0.01041352  0.09241121 -0.01914548 -0.02714807 -0.01887137
+  0.02819051 -0.05526661  0.16820658  0.07653545 -0.04231729  0.06641039
+ -0.0262372   0.05206509  0.10636047  0.03577038 -0.01141363]
+The length of vector is  17
+</code></pre>
+<p>It's a one-dimensional numpy array that contains 17 elements. (<a href="https://www.gymlibrary.ml/pages/environments/mujoco/half_cheetah">MuJoCo HalfCheetah Doc.</a>)</p>
+<pre class="hljs"><code><div>exp_action = env.action_space.sample() <span class="hljs-comment"># randomly sample actions in the action space.</span>
+print(exp_action) <span class="hljs-comment"># torques applied to the joints of the cheetah robot</span>
+print(<span class="hljs-string">'The length of vector is '</span>, len(exp_action))
+print(<span class="hljs-string">'The upper bound is '</span>, env.action_space.high)
+print(<span class="hljs-string">'The lower bound is '</span>, env.action_space.low)
+</div></code></pre>
+<pre><code>[-0.8554227  -0.01244665 -0.8699701   0.97827256  0.41634592  0.64290833]
+The length of vector is  6
+The upper bound is  [1. 1. 1. 1. 1. 1.]
+The lower bound is  [-1. -1. -1. -1. -1. -1.]
+</code></pre>
+<p>By default, the action variable $a_{t}\in(-1,1)$.</p>
+<h2 id="how-to-evaluate-the-quality-of-an-action">How to evaluate the quality of an action?</h2>
+<h3 id="reward-function-rstatrightarrow-rvalue">Reward function: $r(s_{t},a_{t})\rightarrow R_{value}$</h3>
+<pre class="hljs"><code><div>next_state, reward, _, _ = env.step(exp_action) <span class="hljs-comment"># reward = r(s_t, a_t)</span>
+print(<span class="hljs-string">'The reward value is '</span>, reward)
+</div></code></pre>
+<pre><code>The reward value is  -0.17782568745690736
+</code></pre>
+<h1 id="2-bulid-the-decision-making-agent-using-neural-networks">2. Bulid the decision-making agent using neural networks</h1>
+<div>
+<img src=https://adatis.co.uk/wp-content/uploads/ANN-Graph.gif width=50%/>
+</div>
+<pre class="hljs"><code><div><span class="hljs-comment"># define agent (policy) neural network</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MlpPolicy</span><span class="hljs-params">(nn.Module)</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, input_s, hidden_s, output_s)</span>:</span>
+        super(MlpPolicy, self).__init__()
+        self.first_fc = nn.Linear(input_s, hidden_s[<span class="hljs-number">0</span>])
+        <span class="hljs-keyword">if</span> len(hidden_s) &gt; <span class="hljs-number">1</span>:
+            self.hid_fcs = nn.ModuleList([nn.Linear(hidden_s[ind], hidden_s[ind+<span class="hljs-number">1</span>]) <span class="hljs-keyword">for</span> ind <span class="hljs-keyword">in</span> range(len(hidden_s)<span class="hljs-number">-1</span>)])
+        <span class="hljs-keyword">else</span>:
+            self.hid_fcs = <span class="hljs-literal">None</span>
+        self.mu_fc = nn.Linear(hidden_s[<span class="hljs-number">-1</span>], output_s)
+        self.log_std_fc = nn.Linear(hidden_s[<span class="hljs-number">-1</span>], output_s)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span><span class="hljs-params">(self, x, deterministic=False)</span>:</span>
+        x = torch.tanh(self.first_fc(x))
+        <span class="hljs-keyword">if</span> self.hid_fcs <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:
+            <span class="hljs-keyword">for</span> idx, l <span class="hljs-keyword">in</span> enumerate(self.hid_fcs):
+                x = torch.tanh(l(x))
+        mu_x = self.mu_fc(x)
+        std_x = torch.exp(self.log_std_fc(x)) <span class="hljs-comment"># exponential</span>
+        <span class="hljs-comment"># establish distribution and sample action</span>
+        pi_distribution = Normal(mu_x, std_x) <span class="hljs-comment"># think about the derivative of Gaussian distribution</span>
+        
+        <span class="hljs-keyword">if</span> deterministic:
+            <span class="hljs-comment"># Only used for evaluating policy at test time.</span>
+            pi_action = mu_x
+        <span class="hljs-keyword">else</span>:
+            pi_action = pi_distribution.rsample()
+            
+        <span class="hljs-comment"># clip the action into (-1, 1)</span>
+        pi_action = torch.tanh(pi_action)
+        <span class="hljs-keyword">return</span> pi_action
+</div></code></pre>
+<pre class="hljs"><code><div>policy = MlpPolicy(len(init_state), [<span class="hljs-number">32</span>, <span class="hljs-number">32</span>], len(exp_action))
+print(policy)
+</div></code></pre>
+<pre><code>MlpPolicy(
+  (first_fc): Linear(in_features=17, out_features=32, bias=True)
+  (hid_fcs): ModuleList(
+    (0): Linear(in_features=32, out_features=32, bias=True)
+  )
+  (mu_fc): Linear(in_features=32, out_features=6, bias=True)
+  (log_std_fc): Linear(in_features=32, out_features=6, bias=True)
+)
+</code></pre>
+<p>We have a two-head neural network, one is the mean of Gaussian distribution and the other is the standard variance.</p>
+<p><strong>A question: why do we apply Gaussian distribution to the output of policy neural network?</strong></p>
+<h1 id="3-agent-environment-interaction">3. Agent-environment interaction</h1>
+<pre class="hljs"><code><div><span class="hljs-comment"># agent interacts with env.</span>
+state = env.reset() <span class="hljs-comment"># initialize the environment</span>
+max_steps = <span class="hljs-number">1000</span> <span class="hljs-comment"># define how many steps the agent interacts with the env.</span>
+gamma = <span class="hljs-number">0.99</span> <span class="hljs-comment"># discounting factor for future rewards</span>
+
+total_reward = <span class="hljs-number">0</span> <span class="hljs-comment"># culmulative rewards</span>
+
+<span class="hljs-comment"># main loop: agent-environemnt interaction</span>
+<span class="hljs-keyword">for</span> step <span class="hljs-keyword">in</span> range(max_steps):
+    
+    <span class="hljs-comment"># the policy takes the action based on the current state</span>
+    a = policy(torch.from_numpy(state).float(), deterministic=<span class="hljs-literal">False</span>).detach().numpy()
+    <span class="hljs-comment"># then the environemnt provides the feedback such as the next state and reward</span>
+    next_state, r, _, _ = env.step(a)
+    <span class="hljs-comment"># compute the cumulative rewards</span>
+    total_reward += (gamma**step) * r
+    state = next_state
+    
+    env.render()
+    print(<span class="hljs-string">'time step {}, return {}'</span>.format(step, total_reward))
+    
+    <span class="hljs-comment"># the loop will continue over and over again until ...</span>
+    
+env.close()
+</div></code></pre>
+<pre><code>Creating window glfw
+time step 0, return -0.25867587482448773
+time step 1, return -0.10504144867331061
+time step 2, return 0.28178253618579124
+time step 3, return 0.07045758590576473
+time step 4, return -1.0261362623291213
+time step 5, return -2.9799750776686427
+time step 6, return -4.283302261324865
+time step 7, return -4.588906619656646
+time step 8, return -4.5382451513752
+time step 9, return -4.283700237437641
+time step 10, return -4.8927387208248385
+time step 11, return -5.908517971457856
+time step 12, return -6.713207812810991
+time step 13, return -8.242682101138946
+time step 14, return -9.248907089095475
+time step 15, return -9.07331278692916
+time step 16, return -9.685351351744313
+time step 17, return -10.850632874169543
+time step 18, return -11.571258282909515
+time step 19, return -11.999264773594042
+time step 20, return -12.654204337674043
+time step 21, return -13.210920855832507
+time step 22, return -13.02012345906591
+time step 23, return -14.442868359224649
+time step 24, return -15.108306951660266
+time step 25, return -15.701707309781607
+time step 26, return -16.107540786834843
+time step 27, return -15.487544405417573
+time step 28, return -15.787124344554979
+time step 29, return -16.40459795240653
+time step 30, return -16.65736008363269
+time step 31, return -17.499505845073735
+time step 32, return -17.431671182931225
+time step 33, return -17.491994107889145
+time step 34, return -17.504193422666287
+time step 35, return -17.281458812775515
+time step 36, return -17.33661891420659
+time step 37, return -17.466557144409226
+time step 38, return -17.827759792600208
+time step 39, return -17.83107753323285
+time step 40, return -17.441921776444154
+time step 41, return -17.169068068308864
+time step 42, return -17.12060065516317
+time step 43, return -17.896746584231316
+time step 44, return -18.134756225219384
+time step 45, return -18.414939165174967
+time step 46, return -18.609930557178753
+time step 47, return -18.2954908718561
+time step 48, return -18.521639616869713
+time step 49, return -18.867435246397825
+time step 50, return -19.226814663234748
+time step 51, return -19.502675720221223
+time step 52, return -19.690862100215394
+time step 53, return -20.44220146149101
+time step 54, return -21.194925958105063
+time step 55, return -20.976189847704823
+time step 56, return -20.883819770082734
+time step 57, return -21.64938369655767
+time step 58, return -22.081513956045573
+time step 59, return -21.8965804303189
+time step 60, return -21.550098246841163
+time step 61, return -21.284597900656724
+time step 62, return -21.60700682982301
+time step 63, return -21.976895061296062
+time step 64, return -22.316366825501657
+time step 65, return -22.436568823203245
+time step 66, return -22.486983880262063
+time step 67, return -22.465487026813776
+time step 68, return -22.762844973435865
+time step 69, return -23.324366738131292
+time step 70, return -23.626568039174817
+time step 71, return -23.721151527496392
+time step 72, return -23.7393143228063
+time step 73, return -23.775754648373592
+time step 74, return -24.315832844326334
+time step 75, return -24.751844671843433
+time step 76, return -24.78547389601214
+time step 77, return -24.84152693392286
+time step 78, return -25.124946213384813
+time step 79, return -26.088309237040598
+time step 80, return -26.198075647571734
+time step 81, return -26.111423836332257
+time step 82, return -26.202773873916296
+time step 83, return -26.527164487630092
+time step 84, return -26.85513132482186
+time step 85, return -27.197338250473276
+time step 86, return -27.319651264411455
+time step 87, return -27.5259488722498
+time step 88, return -27.570958626107007
+time step 89, return -27.62104265481509
+time step 90, return -27.828102456059412
+time step 91, return -27.782210116374724
+time step 92, return -27.735765780669816
+time step 93, return -27.993263040905735
+time step 94, return -28.08109660085138
+time step 95, return -27.707833760137174
+time step 96, return -27.292036035260807
+time step 97, return -27.322526831139236
+time step 98, return -27.626607902483585
+time step 99, return -27.95985973935604
+time step 100, return -28.33577684852041
+time step 101, return -28.03320613911853
+time step 102, return -27.63459089130671
+time step 103, return -27.875481021619567
+time step 104, return -28.62599577455913
+time step 105, return -29.2025478229278
+time step 106, return -29.107748608861314
+time step 107, return -29.296744661014028
+time step 108, return -30.12649463581254
+time step 109, return -30.83876746771309
+time step 110, return -30.88338450668219
+time step 111, return -30.736615249760057
+time step 112, return -30.538226793582492
+time step 113, return -30.50077659656777
+time step 114, return -30.48226025855288
+time step 115, return -30.969879860469202
+time step 116, return -31.4069943961434
+time step 117, return -31.726281821096027
+time step 118, return -32.045022384804255
+time step 119, return -32.098231724817445
+time step 120, return -32.27090570212793
+time step 121, return -32.51668863162357
+time step 122, return -32.88656892934442
+time step 123, return -33.22269511822334
+time step 124, return -33.48894622929804
+time step 125, return -33.84123656403905
+time step 126, return -34.08534575777334
+time step 127, return -33.97871007043664
+time step 128, return -33.934501410826954
+time step 129, return -34.19862755196255
+time step 130, return -34.50219520840684
+time step 131, return -34.62342802230536
+time step 132, return -34.526372530825505
+time step 133, return -34.62245172821324
+time step 134, return -34.62097735293095
+time step 135, return -34.73819128209293
+time step 136, return -34.76950142352267
+time step 137, return -34.70785914596943
+time step 138, return -34.60432895218578
+time step 139, return -34.41138098696856
+time step 140, return -34.35124053810664
+time step 141, return -34.645500596076964
+time step 142, return -34.70958310391399
+time step 143, return -34.8219460776181
+time step 144, return -35.084462133528916
+time step 145, return -35.173096997930124
+time step 146, return -35.17001911307929
+time step 147, return -35.07380067211566
+time step 148, return -35.133455226239654
+time step 149, return -35.233111606347855
+time step 150, return -35.31583808860344
+time step 151, return -35.3065738005312
+time step 152, return -35.396990673350146
+time step 153, return -35.81901454968487
+time step 154, return -35.86293557753282
+time step 155, return -35.812822626473235
+time step 156, return -35.75874603057996
+time step 157, return -35.78153703270086
+time step 158, return -35.89468659809374
+time step 159, return -35.92086552926709
+time step 160, return -35.96982653772071
+time step 161, return -36.1866488309819
+time step 162, return -36.18541036159647
+time step 163, return -36.18874358970239
+time step 164, return -36.263411950931214
+time step 165, return -36.5565696541975
+time step 166, return -36.99523737421217
+time step 167, return -37.11929871225024
+time step 168, return -37.04427442672428
+time step 169, return -37.224018010098305
+time step 170, return -37.71193071991133
+time step 171, return -37.94608523156273
+time step 172, return -38.08642120669921
+time step 173, return -38.37881614479251
+time step 174, return -38.6496023073969
+time step 175, return -39.04175667319826
+time step 176, return -39.29556143070309
+time step 177, return -39.35442885104318
+time step 178, return -39.531163642663074
+time step 179, return -39.90359313269584
+time step 180, return -40.36522740354272
+time step 181, return -40.5837468730346
+time step 182, return -40.74121582494101
+time step 183, return -40.77518791046395
+time step 184, return -40.902590616481724
+time step 185, return -41.13706731993621
+time step 186, return -41.52570972551955
+time step 187, return -41.67749703572137
+time step 188, return -41.646184773038414
+time step 189, return -41.77866903053771
+time step 190, return -41.8794694544592
+time step 191, return -42.05720597260735
+time step 192, return -42.24406652497063
+time step 193, return -42.454255221968175
+time step 194, return -42.45657521421509
+time step 195, return -42.41382174513071
+time step 196, return -42.49746309364071
+time step 197, return -42.66983334937495
+time step 198, return -42.790559538810555
+time step 199, return -42.839461655691494
+time step 200, return -42.7885786505856
+time step 201, return -42.70471177150208
+time step 202, return -42.78984231700885
+time step 203, return -42.952593631865625
+time step 204, return -43.04936614469539
+time step 205, return -43.126989727297385
+time step 206, return -43.14022236620615
+time step 207, return -43.16727885335258
+time step 208, return -43.248517485862514
+time step 209, return -43.404651344968705
+time step 210, return -43.599278860968354
+time step 211, return -43.76106243326808
+time step 212, return -43.92817579261878
+time step 213, return -44.040766753725386
+time step 214, return -44.22962979326863
+time step 215, return -44.35965822224196
+time step 216, return -44.44718744130121
+time step 217, return -44.48604210060577
+time step 218, return -44.47353104387911
+time step 219, return -44.60024878933388
+time step 220, return -44.827094503481455
+time step 221, return -44.97235017102052
+time step 222, return -44.992373237949366
+time step 223, return -45.13294394079062
+time step 224, return -45.33592503177947
+time step 225, return -45.49423995676753
+time step 226, return -45.60655787559771
+time step 227, return -45.767424109443155
+time step 228, return -45.82979344923018
+time step 229, return -45.83120858184153
+time step 230, return -45.9272937001364
+time step 231, return -46.06210081851008
+time step 232, return -46.18893283531396
+time step 233, return -46.277053131172394
+time step 234, return -46.32746662095192
+time step 235, return -46.256715093693245
+time step 236, return -46.26914735972882
+time step 237, return -46.393837382532965
+time step 238, return -46.463460030366335
+time step 239, return -46.4675898071726
+time step 240, return -46.61498045660796
+time step 241, return -46.76020476817001
+time step 242, return -46.85350421997747
+time step 243, return -46.89715499038166
+time step 244, return -46.92101898438402
+time step 245, return -47.00697224615221
+time step 246, return -47.132952582775275
+time step 247, return -47.215316834768856
+time step 248, return -47.32215934465391
+time step 249, return -47.39736049493253
+time step 250, return -47.43001515651761
+time step 251, return -47.48773764197713
+time step 252, return -47.567474968479566
+time step 253, return -47.62662885142488
+time step 254, return -47.722666323464075
+time step 255, return -47.89700776092669
+time step 256, return -47.95586655519397
+time step 257, return -48.040853616423725
+time step 258, return -48.18075579011174
+time step 259, return -48.3279869615659
+time step 260, return -48.40015275116196
+time step 261, return -48.40097530687859
+time step 262, return -48.442424979865024
+time step 263, return -48.48718264525825
+time step 264, return -48.58040141930567
+time step 265, return -48.684426319498975
+time step 266, return -48.699011676996605
+time step 267, return -48.6643368373899
+time step 268, return -48.71339645044982
+time step 269, return -48.80095412706384
+time step 270, return -48.89021677886206
+time step 271, return -48.89974406982176
+time step 272, return -48.9127619604882
+time step 273, return -48.91427451699697
+time step 274, return -48.93274062977179
+time step 275, return -48.99610978077971
+time step 276, return -49.02211528703664
+time step 277, return -49.08873710684054
+time step 278, return -49.117968682049614
+time step 279, return -49.149081768179386
+time step 280, return -49.19969571027315
+time step 281, return -49.249373396287304
+time step 282, return -49.265886758203564
+time step 283, return -49.21315806993254
+time step 284, return -49.17350683849929
+time step 285, return -49.21987178707828
+time step 286, return -49.24558810226368
+time step 287, return -49.32666033683614
+time step 288, return -49.39276761388184
+time step 289, return -49.38091696705103
+time step 290, return -49.326840259147325
+time step 291, return -49.33021707218701
+time step 292, return -49.34551749395695
+time step 293, return -49.410547638205266
+time step 294, return -49.523150931750045
+time step 295, return -49.52896669068773
+time step 296, return -49.53845056484581
+time step 297, return -49.57560911469615
+time step 298, return -49.58045249827713
+time step 299, return -49.54701025659189
+time step 300, return -49.531229404583286
+time step 301, return -49.53121795362024
+time step 302, return -49.507874767697125
+time step 303, return -49.53437299183684
+time step 304, return -49.54829504958717
+time step 305, return -49.547387164135614
+time step 306, return -49.56505707305705
+time step 307, return -49.54980620835163
+time step 308, return -49.54058741120747
+time step 309, return -49.53645054471226
+time step 310, return -49.48148808493271
+time step 311, return -49.4207661162526
+time step 312, return -49.382402788078366
+time step 313, return -49.360789288954805
+time step 314, return -49.320103506326035
+time step 315, return -49.27106941082983
+time step 316, return -49.22200099188895
+time step 317, return -49.195954591554944
+time step 318, return -49.17808319899332
+time step 319, return -49.134993535225256
+time step 320, return -49.05395132927133
+time step 321, return -48.96593730429463
+time step 322, return -48.87973051547417
+time step 323, return -48.81732041853944
+time step 324, return -48.75902167743509
+time step 325, return -48.6920398949262
+time step 326, return -48.618774852942
+time step 327, return -48.598088515451565
+time step 328, return -48.58946710091345
+time step 329, return -48.520418031112065
+time step 330, return -48.45821874596225
+time step 331, return -48.437615691399536
+time step 332, return -48.399289867618485
+time step 333, return -48.37031969379973
+time step 334, return -48.360320910102295
+time step 335, return -48.31717050624095
+time step 336, return -48.300549849846014
+time step 337, return -48.257621764031384
+time step 338, return -48.192522474072334
+time step 339, return -48.14280628551014
+time step 340, return -48.10846522988067
+time step 341, return -48.073802914551436
+time step 342, return -48.06035453573479
+time step 343, return -48.05924420386078
+time step 344, return -48.07011000532684
+time step 345, return -48.05496439602324
+time step 346, return -48.04526123645041
+time step 347, return -48.03130370792517
+time step 348, return -48.02168138121359
+time step 349, return -47.97021350657016
+time step 350, return -47.95116229394094
+time step 351, return -47.953014515955616
+time step 352, return -47.94321250502101
+time step 353, return -47.93924070799463
+time step 354, return -47.918953605509415
+time step 355, return -47.915640136473954
+time step 356, return -47.904746915632096
+time step 357, return -47.90185421729708
+time step 358, return -47.91829012300282
+time step 359, return -47.940043606589654
+time step 360, return -47.94153285290606
+time step 361, return -47.94413796202042
+time step 362, return -47.94494312783234
+time step 363, return -47.954276073599765
+time step 364, return -47.98540038342949
+time step 365, return -48.03982579847559
+time step 366, return -48.059665414901836
+time step 367, return -48.062506804284595
+time step 368, return -48.04896542677684
+time step 369, return -48.06442886044002
+time step 370, return -48.08916228127571
+time step 371, return -48.11473474613918
+time step 372, return -48.135903406303434
+time step 373, return -48.1550573001126
+time step 374, return -48.15365091319888
+time step 375, return -48.15910617472777
+time step 376, return -48.16050815126526
+time step 377, return -48.17171146793452
+time step 378, return -48.17527783117322
+time step 379, return -48.184501420159826
+time step 380, return -48.1749825311058
+time step 381, return -48.17778393846701
+time step 382, return -48.175098427309564
+time step 383, return -48.178781570116726
+time step 384, return -48.18700326382464
+time step 385, return -48.202275351159784
+time step 386, return -48.22276657600687
+time step 387, return -48.21979480891673
+time step 388, return -48.2056035896483
+time step 389, return -48.21783035130252
+time step 390, return -48.219192754263815
+time step 391, return -48.21568411062581
+time step 392, return -48.22297324993645
+time step 393, return -48.22955524133704
+time step 394, return -48.23965358894604
+time step 395, return -48.26623510254588
+time step 396, return -48.27721770430777
+time step 397, return -48.27698389674361
+time step 398, return -48.26454612549634
+time step 399, return -48.26341536680547
+time step 400, return -48.27997175508934
+time step 401, return -48.28466998817569
+time step 402, return -48.2798905119507
+time step 403, return -48.28664452691556
+time step 404, return -48.30142131909316
+time step 405, return -48.322039942376506
+time step 406, return -48.341830610841455
+time step 407, return -48.33773681459135
+time step 408, return -48.35091048556398
+time step 409, return -48.353696225711985
+time step 410, return -48.35550890230346
+time step 411, return -48.354167135385
+time step 412, return -48.36006346843723
+time step 413, return -48.36312030920397
+time step 414, return -48.38155874699874
+time step 415, return -48.38921300372467
+time step 416, return -48.38491258591046
+time step 417, return -48.389417120195326
+time step 418, return -48.41025648644549
+time step 419, return -48.43456900589582
+time step 420, return -48.44917649373011
+time step 421, return -48.445978712615684
+time step 422, return -48.45119850403655
+time step 423, return -48.45160031138204
+time step 424, return -48.45963834470645
+time step 425, return -48.470548547424286
+time step 426, return -48.46518777973884
+time step 427, return -48.451487590846675
+time step 428, return -48.46877612853991
+time step 429, return -48.48508232117296
+time step 430, return -48.49892011065638
+time step 431, return -48.51771065960189
+time step 432, return -48.515412394334795
+time step 433, return -48.51910459384253
+time step 434, return -48.5250770325506
+time step 435, return -48.537717819463325
+time step 436, return -48.54042585571372
+time step 437, return -48.54905073911576
+time step 438, return -48.55644602272293
+time step 439, return -48.56031913243619
+time step 440, return -48.56350025630851
+time step 441, return -48.56700470576404
+time step 442, return -48.57394057538626
+time step 443, return -48.57786777196909
+time step 444, return -48.57003569908325
+time step 445, return -48.577416183883514
+time step 446, return -48.58040902884096
+time step 447, return -48.572877704149185
+time step 448, return -48.567056151426925
+time step 449, return -48.569574993176474
+time step 450, return -48.57004222425256
+time step 451, return -48.57753763320086
+time step 452, return -48.57675977074593
+time step 453, return -48.57698125445628
+time step 454, return -48.57280503563706
+time step 455, return -48.5801744106822
+time step 456, return -48.58338571642535
+time step 457, return -48.57807690914083
+time step 458, return -48.57410141118396
+time step 459, return -48.568715112750674
+time step 460, return -48.56351576226319
+time step 461, return -48.56529740736409
+time step 462, return -48.57393923771211
+time step 463, return -48.5860475545619
+time step 464, return -48.5932397328293
+time step 465, return -48.589311181597765
+time step 466, return -48.58779589041255
+time step 467, return -48.590895093596785
+time step 468, return -48.59515513842523
+time step 469, return -48.60691367249488
+time step 470, return -48.61775378537564
+time step 471, return -48.62257663442673
+time step 472, return -48.62488603766741
+time step 473, return -48.624192033316035
+time step 474, return -48.62997680537462
+time step 475, return -48.63805329193476
+time step 476, return -48.643548002030386
+time step 477, return -48.6397254427784
+time step 478, return -48.636167031319175
+time step 479, return -48.64217937467634
+time step 480, return -48.65397475734526
+time step 481, return -48.66554080122405
+time step 482, return -48.66816704194484
+time step 483, return -48.66625454637225
+time step 484, return -48.66559774368018
+time step 485, return -48.667949141219225
+time step 486, return -48.67286987225519
+time step 487, return -48.67809761312433
+time step 488, return -48.68065144345261
+time step 489, return -48.68786508643861
+time step 490, return -48.68986772563165
+time step 491, return -48.686987072264074
+time step 492, return -48.68000733042885
+time step 493, return -48.67544277662467
+time step 494, return -48.67048554837959
+time step 495, return -48.67139066276955
+time step 496, return -48.6736864255503
+time step 497, return -48.67020058201134
+time step 498, return -48.67340272703267
+time step 499, return -48.67305431799961
+time step 500, return -48.675771938534936
+time step 501, return -48.67466416278909
+time step 502, return -48.670889003108755
+time step 503, return -48.67054287512699
+time step 504, return -48.677017026901424
+time step 505, return -48.677321347169375
+time step 506, return -48.67888919515643
+time step 507, return -48.68179094362103
+time step 508, return -48.68098726908538
+time step 509, return -48.680579586212176
+time step 510, return -48.686442127621575
+time step 511, return -48.6888038585721
+time step 512, return -48.68489454604869
+time step 513, return -48.68689840580895
+time step 514, return -48.69200858044449
+time step 515, return -48.69488386691229
+time step 516, return -48.70339119794606
+time step 517, return -48.71186713685037
+time step 518, return -48.71305366237525
+time step 519, return -48.71731709794409
+time step 520, return -48.71797200972418
+time step 521, return -48.71699538372225
+time step 522, return -48.72374080703985
+time step 523, return -48.725411962959974
+time step 524, return -48.729038495092084
+time step 525, return -48.72745653097208
+time step 526, return -48.72299820045448
+time step 527, return -48.72440743176531
+time step 528, return -48.725144290019294
+time step 529, return -48.72689463264867
+time step 530, return -48.72934828929925
+time step 531, return -48.73687109822101
+time step 532, return -48.739845474445225
+time step 533, return -48.738004842432126
+time step 534, return -48.73511930505392
+time step 535, return -48.734126873739534
+time step 536, return -48.73893605239234
+time step 537, return -48.74298101400971
+time step 538, return -48.74911466792026
+time step 539, return -48.75201149172153
+time step 540, return -48.75456798410029
+time step 541, return -48.75776969966989
+time step 542, return -48.75774457491524
+time step 543, return -48.75505206136845
+time step 544, return -48.75247241702753
+time step 545, return -48.75228107286717
+time step 546, return -48.757189216794444
+time step 547, return -48.75868418999822
+time step 548, return -48.76194575291849
+time step 549, return -48.763076425459474
+time step 550, return -48.76088695603627
+time step 551, return -48.75731389626513
+time step 552, return -48.761748730945065
+time step 553, return -48.76884982878509
+time step 554, return -48.77166599607875
+time step 555, return -48.77108638560638
+time step 556, return -48.771300913490656
+time step 557, return -48.772570380968446
+time step 558, return -48.77366648210506
+time step 559, return -48.77564545840063
+time step 560, return -48.779569167862554
+time step 561, return -48.78541363055964
+time step 562, return -48.787120218259155
+time step 563, return -48.78553598920191
+time step 564, return -48.78432786711008
+time step 565, return -48.78676690864782
+time step 566, return -48.79198289837859
+time step 567, return -48.79253316948505
+time step 568, return -48.79374606171856
+time step 569, return -48.79429045315903
+time step 570, return -48.79406561787986
+time step 571, return -48.795178356916495
+time step 572, return -48.79750119862538
+time step 573, return -48.80069377059827
+time step 574, return -48.8025369780037
+time step 575, return -48.8031066041283
+time step 576, return -48.803834214884375
+time step 577, return -48.80671651698165
+time step 578, return -48.81053380810259
+time step 579, return -48.81173928051918
+time step 580, return -48.81317333621938
+time step 581, return -48.815380514826394
+time step 582, return -48.816196344851306
+time step 583, return -48.81649543559061
+time step 584, return -48.8172845623863
+time step 585, return -48.81966814577877
+time step 586, return -48.825215100162
+time step 587, return -48.82781140811887
+time step 588, return -48.82867996225098
+time step 589, return -48.826055850938666
+time step 590, return -48.82488360817151
+time step 591, return -48.827922800618815
+time step 592, return -48.830393276090035
+time step 593, return -48.833614533481395
+time step 594, return -48.837241338102245
+time step 595, return -48.83691855078032
+time step 596, return -48.8364094042481
+time step 597, return -48.838771405772725
+time step 598, return -48.83972991260273
+time step 599, return -48.839244397371914
+time step 600, return -48.83704798583299
+time step 601, return -48.834101230849306
+time step 602, return -48.833045642987585
+time step 603, return -48.835158413004564
+time step 604, return -48.83620826514484
+time step 605, return -48.83567729536985
+time step 606, return -48.835370040938436
+time step 607, return -48.83472955223724
+time step 608, return -48.834529031245125
+time step 609, return -48.8353841900822
+time step 610, return -48.8371725565965
+time step 611, return -48.838451705542134
+time step 612, return -48.83882082546306
+time step 613, return -48.83937305835009
+time step 614, return -48.84018671149493
+time step 615, return -48.840639539934806
+time step 616, return -48.841916123086285
+time step 617, return -48.842719396652335
+time step 618, return -48.842167664030065
+time step 619, return -48.84028629488176
+time step 620, return -48.8405379025461
+time step 621, return -48.839661367453274
+time step 622, return -48.83771503243075
+time step 623, return -48.83818978213026
+time step 624, return -48.84014717873305
+time step 625, return -48.8411020292641
+time step 626, return -48.84133416419859
+time step 627, return -48.84097839882489
+time step 628, return -48.84086349312096
+time step 629, return -48.84023796358965
+time step 630, return -48.84127932622864
+time step 631, return -48.84206542439242
+time step 632, return -48.842444802420545
+time step 633, return -48.842571326233625
+time step 634, return -48.84253812510272
+time step 635, return -48.84258190239781
+time step 636, return -48.842121096735205
+time step 637, return -48.842392167195214
+time step 638, return -48.84232392859537
+time step 639, return -48.843066015836555
+time step 640, return -48.84384735776416
+time step 641, return -48.845924424449045
+time step 642, return -48.84739901768568
+time step 643, return -48.84850263886121
+time step 644, return -48.84774123021634
+time step 645, return -48.847876625558506
+time step 646, return -48.8485667243696
+time step 647, return -48.84852629550255
+time step 648, return -48.84868303548547
+time step 649, return -48.84918528336496
+time step 650, return -48.849006369097154
+time step 651, return -48.85015513611953
+time step 652, return -48.851723225062344
+time step 653, return -48.85093429105044
+time step 654, return -48.849219421545975
+time step 655, return -48.849853932787596
+time step 656, return -48.85194781610604
+time step 657, return -48.85469532488564
+time step 658, return -48.854764752169565
+time step 659, return -48.85362723201078
+time step 660, return -48.85366851865187
+time step 661, return -48.855017374446675
+time step 662, return -48.85603680103724
+time step 663, return -48.85619391180953
+time step 664, return -48.856585822461504
+time step 665, return -48.857028693244565
+time step 666, return -48.85763399698255
+time step 667, return -48.85782959385995
+time step 668, return -48.85765367783609
+time step 669, return -48.85715637494116
+time step 670, return -48.857202017809634
+time step 671, return -48.85855357832303
+time step 672, return -48.85979811226036
+time step 673, return -48.85985968831549
+time step 674, return -48.86119651055652
+time step 675, return -48.861605587994525
+time step 676, return -48.86177956733729
+time step 677, return -48.86152256561746
+time step 678, return -48.86205499974467
+time step 679, return -48.86208282339784
+time step 680, return -48.86158869895436
+time step 681, return -48.861794379558866
+time step 682, return -48.86326174686839
+time step 683, return -48.864633541471534
+time step 684, return -48.86385566665084
+time step 685, return -48.86356730696561
+time step 686, return -48.86260587993697
+time step 687, return -48.86226584645296
+time step 688, return -48.86184119653681
+time step 689, return -48.862022642054846
+time step 690, return -48.8620291082678
+time step 691, return -48.86258858626538
+time step 692, return -48.86410370924053
+time step 693, return -48.86500115519776
+time step 694, return -48.86447988197574
+time step 695, return -48.86496408267822
+time step 696, return -48.86444517415603
+time step 697, return -48.86429295057036
+time step 698, return -48.86436922461578
+time step 699, return -48.86330957667911
+time step 700, return -48.86266084335276
+time step 701, return -48.863626493303684
+time step 702, return -48.864822050393414
+time step 703, return -48.8649659563286
+time step 704, return -48.86488994224079
+time step 705, return -48.86658507723119
+time step 706, return -48.867991146126315
+time step 707, return -48.869573597630406
+time step 708, return -48.87077753014544
+time step 709, return -48.871207074813306
+time step 710, return -48.87126467891309
+time step 711, return -48.87237820469828
+time step 712, return -48.87290140842542
+time step 713, return -48.8737842212425
+time step 714, return -48.875146392462526
+time step 715, return -48.875270168280146
+time step 716, return -48.87479479653373
+time step 717, return -48.87510208559619
+time step 718, return -48.87549031551726
+time step 719, return -48.87587908876865
+time step 720, return -48.87586146044897
+time step 721, return -48.876114136485086
+time step 722, return -48.87688220536426
+time step 723, return -48.877601790842675
+time step 724, return -48.87749934538751
+time step 725, return -48.87722133922915
+time step 726, return -48.87681084405485
+time step 727, return -48.8768890744187
+time step 728, return -48.87767084949325
+time step 729, return -48.877721783057304
+time step 730, return -48.87748607717194
+time step 731, return -48.87755012617516
+time step 732, return -48.87806815249974
+time step 733, return -48.87860498651796
+time step 734, return -48.87839112808737
+time step 735, return -48.87833753123548
+time step 736, return -48.87892163195768
+time step 737, return -48.87907725231191
+time step 738, return -48.879005205727395
+time step 739, return -48.879029525719
+time step 740, return -48.87928820836028
+time step 741, return -48.879675404851525
+time step 742, return -48.87985306184486
+time step 743, return -48.880198546671565
+time step 744, return -48.880934261791985
+time step 745, return -48.88127448306693
+time step 746, return -48.88121431936156
+time step 747, return -48.88124363551099
+time step 748, return -48.88198255407065
+time step 749, return -48.88251093299869
+time step 750, return -48.882746293868415
+time step 751, return -48.882837212385034
+time step 752, return -48.88273021338814
+time step 753, return -48.88263203052099
+time step 754, return -48.88281265585978
+time step 755, return -48.88337879503272
+time step 756, return -48.88398099400598
+time step 757, return -48.884106162546274
+time step 758, return -48.88396607880419
+time step 759, return -48.88395198393246
+time step 760, return -48.88416718435976
+time step 761, return -48.88450469430338
+time step 762, return -48.88483357504136
+time step 763, return -48.88499625155305
+time step 764, return -48.885087159747926
+time step 765, return -48.88481553989039
+time step 766, return -48.88508274153055
+time step 767, return -48.88532292589673
+time step 768, return -48.88545601045367
+time step 769, return -48.885614829301225
+time step 770, return -48.88557637769141
+time step 771, return -48.88504365420253
+time step 772, return -48.884793107840196
+time step 773, return -48.88449259163499
+time step 774, return -48.884468359432894
+time step 775, return -48.88449139038544
+time step 776, return -48.884719314626125
+time step 777, return -48.884995449202584
+time step 778, return -48.88457462422642
+time step 779, return -48.88406937765191
+time step 780, return -48.88406418392067
+time step 781, return -48.884159834187116
+time step 782, return -48.884296613198586
+time step 783, return -48.884509033766825
+time step 784, return -48.8845332558353
+time step 785, return -48.88441103666054
+time step 786, return -48.88450338854449
+time step 787, return -48.88463185198832
+time step 788, return -48.884682073050016
+time step 789, return -48.88479142315178
+time step 790, return -48.884812148694486
+time step 791, return -48.88449607869794
+time step 792, return -48.88457968728172
+time step 793, return -48.88457553600963
+time step 794, return -48.88435083009482
+time step 795, return -48.88429473276934
+time step 796, return -48.88451095066464
+time step 797, return -48.885075455666296
+time step 798, return -48.88529477126348
+time step 799, return -48.885434574444524
+time step 800, return -48.88540261188231
+time step 801, return -48.88531161037525
+time step 802, return -48.88524674935796
+time step 803, return -48.88527091499962
+time step 804, return -48.88556591206198
+time step 805, return -48.8860733030327
+time step 806, return -48.88644729183529
+time step 807, return -48.88667030867395
+time step 808, return -48.88653131401725
+time step 809, return -48.88643967706983
+time step 810, return -48.88646039759079
+time step 811, return -48.886506903546675
+time step 812, return -48.88680679519764
+time step 813, return -48.88692718168674
+time step 814, return -48.88685834470449
+time step 815, return -48.886680448253514
+time step 816, return -48.88667024581791
+time step 817, return -48.8868186784431
+time step 818, return -48.886993831358815
+time step 819, return -48.887194608422476
+time step 820, return -48.887563483162126
+time step 821, return -48.887801214624474
+time step 822, return -48.887829092459945
+time step 823, return -48.88802101087986
+time step 824, return -48.88797263769755
+time step 825, return -48.88794763258324
+time step 826, return -48.88795174282547
+time step 827, return -48.88790607735729
+time step 828, return -48.887998077629575
+time step 829, return -48.88805662421547
+time step 830, return -48.88810236841655
+time step 831, return -48.88812802087626
+time step 832, return -48.88810554367778
+time step 833, return -48.8881784957612
+time step 834, return -48.888252121416954
+time step 835, return -48.888230698588096
+time step 836, return -48.88830554129557
+time step 837, return -48.88826263010156
+time step 838, return -48.88825014500678
+time step 839, return -48.88822498222406
+time step 840, return -48.888288623161216
+time step 841, return -48.888406578472214
+time step 842, return -48.88842059148309
+time step 843, return -48.88859243152181
+time step 844, return -48.88906204590031
+time step 845, return -48.88924155113713
+time step 846, return -48.88918919143754
+time step 847, return -48.88909023118157
+time step 848, return -48.88912696920511
+time step 849, return -48.88913701092062
+time step 850, return -48.88941978862462
+time step 851, return -48.88950077711876
+time step 852, return -48.889347477258625
+time step 853, return -48.88941399590686
+time step 854, return -48.88975076522811
+time step 855, return -48.88979735099016
+time step 856, return -48.88976056097992
+time step 857, return -48.88977053244473
+time step 858, return -48.890002764827635
+time step 859, return -48.89020308791404
+time step 860, return -48.89017675390607
+time step 861, return -48.88995344421271
+time step 862, return -48.89017965438113
+time step 863, return -48.89049779665524
+time step 864, return -48.89051060800453
+time step 865, return -48.89047631430753
+time step 866, return -48.89045505708696
+time step 867, return -48.89057111693619
+time step 868, return -48.890873766912556
+time step 869, return -48.891059433120255
+time step 870, return -48.891040191009
+time step 871, return -48.891252942358236
+time step 872, return -48.89142669739173
+time step 873, return -48.8914629719446
+time step 874, return -48.89156727748815
+time step 875, return -48.891549283606864
+time step 876, return -48.8915608547474
+time step 877, return -48.891708198625274
+time step 878, return -48.89184316755173
+time step 879, return -48.89192450080891
+time step 880, return -48.89205127682305
+time step 881, return -48.89213851813036
+time step 882, return -48.89233785120655
+time step 883, return -48.89245257113861
+time step 884, return -48.892529269798125
+time step 885, return -48.892649853523444
+time step 886, return -48.89259699399536
+time step 887, return -48.89254983121893
+time step 888, return -48.8925863467772
+time step 889, return -48.89274405872851
+time step 890, return -48.89284894231302
+time step 891, return -48.8929762506218
+time step 892, return -48.892987019287595
+time step 893, return -48.89289786665739
+time step 894, return -48.89287493394557
+time step 895, return -48.8929902028744
+time step 896, return -48.89325577160289
+time step 897, return -48.89332952131601
+time step 898, return -48.893383090399574
+time step 899, return -48.89333058234699
+time step 900, return -48.893391557193134
+time step 901, return -48.89337288306498
+time step 902, return -48.89348527303235
+time step 903, return -48.89362250907396
+time step 904, return -48.89364078162383
+time step 905, return -48.8936301826409
+time step 906, return -48.893596577877084
+time step 907, return -48.89375573628136
+time step 908, return -48.89386240488718
+time step 909, return -48.893999041110845
+time step 910, return -48.89415626258501
+time step 911, return -48.89430166790672
+time step 912, return -48.89444709673924
+time step 913, return -48.8944910344025
+time step 914, return -48.89444806716032
+time step 915, return -48.89445856330526
+time step 916, return -48.894515600473305
+time step 917, return -48.89470641433048
+time step 918, return -48.89479441876385
+time step 919, return -48.89482123595186
+time step 920, return -48.894870520045124
+time step 921, return -48.894936297867005
+time step 922, return -48.894955470449275
+time step 923, return -48.894969567543136
+time step 924, return -48.89497912649749
+time step 925, return -48.895044720302366
+time step 926, return -48.895033571634634
+time step 927, return -48.89498329508685
+time step 928, return -48.89496901634061
+time step 929, return -48.8950506547346
+time step 930, return -48.89518984367122
+time step 931, return -48.8952453751219
+time step 932, return -48.89526757086173
+time step 933, return -48.895265732059855
+time step 934, return -48.895293983997796
+time step 935, return -48.895326566156335
+time step 936, return -48.89541972467674
+time step 937, return -48.895432751035386
+time step 938, return -48.89539071802154
+time step 939, return -48.89542616399459
+time step 940, return -48.89548235794111
+time step 941, return -48.89549547163176
+time step 942, return -48.89545536581646
+time step 943, return -48.89535987023946
+time step 944, return -48.89535105092802
+time step 945, return -48.89539346013287
+time step 946, return -48.89540628461141
+time step 947, return -48.89541340284457
+time step 948, return -48.895442605330324
+time step 949, return -48.895555617578296
+time step 950, return -48.89559059935021
+time step 951, return -48.8955707552275
+time step 952, return -48.895564055985375
+time step 953, return -48.895627040744166
+time step 954, return -48.895716434369895
+time step 955, return -48.895765947964605
+time step 956, return -48.895836713381144
+time step 957, return -48.89593005108938
+time step 958, return -48.896050212264896
+time step 959, return -48.89608175222024
+time step 960, return -48.89608905782713
+time step 961, return -48.89611392519333
+time step 962, return -48.896127039124046
+time step 963, return -48.896162578398574
+time step 964, return -48.89618730510317
+time step 965, return -48.89624789379982
+time step 966, return -48.896245022274265
+time step 967, return -48.89630737473352
+time step 968, return -48.89637385803979
+time step 969, return -48.8964234528693
+time step 970, return -48.89644026064437
+time step 971, return -48.8964022400454
+time step 972, return -48.89645265008715
+time step 973, return -48.896429416516355
+time step 974, return -48.89638286547591
+time step 975, return -48.8964012171227
+time step 976, return -48.89642951292258
+time step 977, return -48.8964184293627
+time step 978, return -48.896407593184186
+time step 979, return -48.896430065082264
+time step 980, return -48.89644478316326
+time step 981, return -48.896396904477974
+time step 982, return -48.8963300217594
+time step 983, return -48.89632375881673
+time step 984, return -48.896329796054545
+time step 985, return -48.896339454199214
+time step 986, return -48.89633326985985
+time step 987, return -48.89632265072647
+time step 988, return -48.8963506069128
+time step 989, return -48.896412212058166
+time step 990, return -48.896454496623136
+time step 991, return -48.89645137558918
+time step 992, return -48.89642598261168
+time step 993, return -48.89636406419117
+time step 994, return -48.8963851497039
+time step 995, return -48.89644177554219
+time step 996, return -48.8964607653155
+time step 997, return -48.896431793150626
+time step 998, return -48.89646329869141
+time step 999, return -48.89652784068935
+</code></pre>
+<pre class="hljs"><code><div>
+</div></code></pre>
+
+</body>
+</html>

@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>04_reinforcement_q_learning.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<pre class="hljs"><code><div>%matplotlib inline
+</div></code></pre>
+<h1 id="reinforcement-learning-dqn-tutorial">Reinforcement Learning (DQN) Tutorial</h1>
+<p><strong>Author</strong>: <code>Adam Paszke &lt;https://github.com/apaszke&gt;</code>_</p>
+<p>This tutorial shows how to use PyTorch to train a Deep Q Learning (DQN) agent
+on the CartPole-v0 task from the <code>OpenAI Gym &lt;https://www.gymlibrary.ml/&gt;</code>__.</p>
+<p><strong>Task</strong></p>
+<p>The agent has to decide between two actions - moving the cart left or
+right - so that the pole attached to it stays upright. You can find an
+official leaderboard with various algorithms and visualizations at the
+<code>Gym website &lt;https://www.gymlibrary.ml/environments/classic_control/cart_pole&gt;</code>__.</p>
+<p>.. figure:: /_static/img/cartpole.gif
+:alt: cartpole</p>
+<p>cartpole</p>
+<p>As the agent observes the current state of the environment and chooses
+an action, the environment <em>transitions</em> to a new state, and also
+returns a reward that indicates the consequences of the action. In this
+task, rewards are +1 for every incremental timestep and the environment
+terminates if the pole falls over too far or the cart moves more then 2.4
+units away from center. This means better performing scenarios will run
+for longer duration, accumulating larger return.</p>
+<p>The CartPole task is designed so that the inputs to the agent are 4 real
+values representing the environment state (position, velocity, etc.).
+However, neural networks can solve the task purely by looking at the
+scene, so we'll use a patch of the screen centered on the cart as an
+input. Because of this, our results aren't directly comparable to the
+ones from the official leaderboard - our task is much harder.
+Unfortunately this does slow down the training, because we have to
+render all the frames.</p>
+<p>Strictly speaking, we will present the state as the difference between
+the current screen patch and the previous one. This will allow the agent
+to take the velocity of the pole into account from one image.</p>
+<p><strong>Packages</strong></p>
+<p>First, let's import needed packages. Firstly, we need
+<code>gym &lt;https://github.com/openai/gym&gt;</code>__ for the environment
+(Install using <code>pip install gym</code>).
+We'll also use the following from PyTorch:</p>
+<ul>
+<li>neural networks (<code>torch.nn</code>)</li>
+<li>optimization (<code>torch.optim</code>)</li>
+<li>automatic differentiation (<code>torch.autograd</code>)</li>
+<li>utilities for vision tasks (<code>torchvision</code> - <code>a separate package &lt;https://github.com/pytorch/vision&gt;</code>__).</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> gym
+<span class="hljs-keyword">import</span> math
+<span class="hljs-keyword">import</span> random
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> namedtuple, deque
+<span class="hljs-keyword">from</span> itertools <span class="hljs-keyword">import</span> count
+<span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
+
+<span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+<span class="hljs-keyword">import</span> torch.optim <span class="hljs-keyword">as</span> optim
+<span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F
+<span class="hljs-keyword">import</span> torchvision.transforms <span class="hljs-keyword">as</span> T
+
+
+env = gym.make(<span class="hljs-string">'CartPole-v0'</span>).unwrapped
+
+<span class="hljs-comment"># set up matplotlib</span>
+is_ipython = <span class="hljs-string">'inline'</span> <span class="hljs-keyword">in</span> matplotlib.get_backend()
+<span class="hljs-keyword">if</span> is_ipython:
+    <span class="hljs-keyword">from</span> IPython <span class="hljs-keyword">import</span> display
+
+plt.ion()
+
+<span class="hljs-comment"># if gpu is to be used</span>
+device = torch.device(<span class="hljs-string">"cuda"</span> <span class="hljs-keyword">if</span> torch.cuda.is_available() <span class="hljs-keyword">else</span> <span class="hljs-string">"cpu"</span>)
+</div></code></pre>
+<h2 id="replay-memory">Replay Memory</h2>
+<p>We'll be using experience replay memory for training our DQN. It stores
+the transitions that the agent observes, allowing us to reuse this data
+later. By sampling from it randomly, the transitions that build up a
+batch are decorrelated. It has been shown that this greatly stabilizes
+and improves the DQN training procedure.</p>
+<p>For this, we're going to need two classses:</p>
+<ul>
+<li><code>Transition</code> - a named tuple representing a single transition in
+our environment. It essentially maps (state, action) pairs
+to their (next_state, reward) result, with the state being the
+screen difference image as described later on.</li>
+<li><code>ReplayMemory</code> - a cyclic buffer of bounded size that holds the
+transitions observed recently. It also implements a <code>.sample()</code>
+method for selecting a random batch of transitions for training.</li>
+</ul>
+<pre class="hljs"><code><div>Transition = namedtuple(<span class="hljs-string">'Transition'</span>,
+                        (<span class="hljs-string">'state'</span>, <span class="hljs-string">'action'</span>, <span class="hljs-string">'next_state'</span>, <span class="hljs-string">'reward'</span>))
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReplayMemory</span><span class="hljs-params">(object)</span>:</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, capacity)</span>:</span>
+        self.memory = deque([],maxlen=capacity)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">push</span><span class="hljs-params">(self, *args)</span>:</span>
+        <span class="hljs-string">"""Save a transition"""</span>
+        self.memory.append(Transition(*args))
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sample</span><span class="hljs-params">(self, batch_size)</span>:</span>
+        <span class="hljs-keyword">return</span> random.sample(self.memory, batch_size)
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__len__</span><span class="hljs-params">(self)</span>:</span>
+        <span class="hljs-keyword">return</span> len(self.memory)
+</div></code></pre>
+<p>Now, let's define our model. But first, let's quickly recap what a DQN is.</p>
+<h2 id="dqn-algorithm">DQN algorithm</h2>
+<p>Our environment is deterministic, so all equations presented here are
+also formulated deterministically for the sake of simplicity. In the
+reinforcement learning literature, they would also contain expectations
+over stochastic transitions in the environment.</p>
+<p>Our aim will be to train a policy that tries to maximize the discounted,
+cumulative reward
+$R_{t_0} = \sum_{t=t_0}^{\infty} \gamma^{t - t_0} r_t$, where
+$R_{t_0}$ is also known as the <em>return</em>. The discount,
+$\gamma$, should be a constant between $0$ and $1$
+that ensures the sum converges. It makes rewards from the uncertain far
+future less important for our agent than the ones in the near future
+that it can be fairly confident about.</p>
+<p>The main idea behind Q-learning is that if we had a function
+$Q^*: State \times Action \rightarrow \mathbb{R}$, that could tell
+us what our return would be, if we were to take an action in a given
+state, then we could easily construct a policy that maximizes our
+rewards:</p>
+<p>\begin{align}\pi^<em>(s) = \arg!\max_a \ Q^</em>(s, a)\end{align}</p>
+<p>However, we don't know everything about the world, so we don't have
+access to $Q^<em>$. But, since neural networks are universal function
+approximators, we can simply create one and train it to resemble
+$Q^</em>$.</p>
+<p>For our training update rule, we'll use a fact that every $Q$
+function for some policy obeys the Bellman equation:</p>
+<p>\begin{align}Q^{\pi}(s, a) = r + \gamma Q^{\pi}(s', \pi(s'))\end{align}</p>
+<p>The difference between the two sides of the equality is known as the
+temporal difference error, $\delta$:</p>
+<p>\begin{align}\delta = Q(s, a) - (r + \gamma \max_a Q(s', a))\end{align}</p>
+<p>To minimise this error, we will use the <code>Huber loss &lt;https://en.wikipedia.org/wiki/Huber_loss&gt;</code>__. The Huber loss acts
+like the mean squared error when the error is small, but like the mean
+absolute error when the error is large - this makes it more robust to
+outliers when the estimates of $Q$ are very noisy. We calculate
+this over a batch of transitions, $B$, sampled from the replay
+memory:</p>
+<p>\begin{align}\mathcal{L} = \frac{1}{|B|}\sum_{(s, a, s', r) \ \in \ B} \mathcal{L}(\delta)\end{align}</p>
+<p>\begin{align}\text{where} \quad \mathcal{L}(\delta) = \begin{cases}
+\frac{1}{2}{\delta^2}  &amp; \text{for } |\delta| \le 1, \
+|\delta| - \frac{1}{2} &amp; \text{otherwise.}
+\end{cases}\end{align}</p>
+<p>Q-network
+^^^^^^^^^</p>
+<p>Our model will be a convolutional neural network that takes in the
+difference between the current and previous screen patches. It has two
+outputs, representing $Q(s, \mathrm{left})$ and
+$Q(s, \mathrm{right})$ (where $s$ is the input to the
+network). In effect, the network is trying to predict the <em>expected return</em> of
+taking each action given the current input.</p>
+<pre class="hljs"><code><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DQN</span><span class="hljs-params">(nn.Module)</span>:</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, h, w, outputs)</span>:</span>
+        super(DQN, self).__init__()
+        self.conv1 = nn.Conv2d(<span class="hljs-number">3</span>, <span class="hljs-number">16</span>, kernel_size=<span class="hljs-number">5</span>, stride=<span class="hljs-number">2</span>)
+        self.bn1 = nn.BatchNorm2d(<span class="hljs-number">16</span>)
+        self.conv2 = nn.Conv2d(<span class="hljs-number">16</span>, <span class="hljs-number">32</span>, kernel_size=<span class="hljs-number">5</span>, stride=<span class="hljs-number">2</span>)
+        self.bn2 = nn.BatchNorm2d(<span class="hljs-number">32</span>)
+        self.conv3 = nn.Conv2d(<span class="hljs-number">32</span>, <span class="hljs-number">32</span>, kernel_size=<span class="hljs-number">5</span>, stride=<span class="hljs-number">2</span>)
+        self.bn3 = nn.BatchNorm2d(<span class="hljs-number">32</span>)
+
+        <span class="hljs-comment"># Number of Linear input connections depends on output of conv2d layers</span>
+        <span class="hljs-comment"># and therefore the input image size, so compute it.</span>
+        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">conv2d_size_out</span><span class="hljs-params">(size, kernel_size = <span class="hljs-number">5</span>, stride = <span class="hljs-number">2</span>)</span>:</span>
+            <span class="hljs-keyword">return</span> (size - (kernel_size - <span class="hljs-number">1</span>) - <span class="hljs-number">1</span>) // stride  + <span class="hljs-number">1</span>
+        convw = conv2d_size_out(conv2d_size_out(conv2d_size_out(w)))
+        convh = conv2d_size_out(conv2d_size_out(conv2d_size_out(h)))
+        linear_input_size = convw * convh * <span class="hljs-number">32</span>
+        self.head = nn.Linear(linear_input_size, outputs)
+
+    <span class="hljs-comment"># Called with either one element to determine next action, or a batch</span>
+    <span class="hljs-comment"># during optimization. Returns tensor([[left0exp,right0exp]...]).</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span><span class="hljs-params">(self, x)</span>:</span>
+        x = x.to(device)
+        x = F.relu(self.bn1(self.conv1(x)))
+        x = F.relu(self.bn2(self.conv2(x)))
+        x = F.relu(self.bn3(self.conv3(x)))
+        <span class="hljs-keyword">return</span> self.head(x.view(x.size(<span class="hljs-number">0</span>), <span class="hljs-number">-1</span>))
+</div></code></pre>
+<p>Input extraction
+^^^^^^^^^^^^^^^^</p>
+<p>The code below are utilities for extracting and processing rendered
+images from the environment. It uses the <code>torchvision</code> package, which
+makes it easy to compose image transforms. Once you run the cell it will
+display an example patch that it extracted.</p>
+<pre class="hljs"><code><div>resize = T.Compose([T.ToPILImage(),
+                    T.Resize(<span class="hljs-number">40</span>, interpolation=Image.CUBIC),
+                    T.ToTensor()])
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cart_location</span><span class="hljs-params">(screen_width)</span>:</span>
+    world_width = env.x_threshold * <span class="hljs-number">2</span>
+    scale = screen_width / world_width
+    <span class="hljs-keyword">return</span> int(env.state[<span class="hljs-number">0</span>] * scale + screen_width / <span class="hljs-number">2.0</span>)  <span class="hljs-comment"># MIDDLE OF CART</span>
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_screen</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-comment"># Returned screen requested by gym is 400x600x3, but is sometimes larger</span>
+    <span class="hljs-comment"># such as 800x1200x3. Transpose it into torch order (CHW).</span>
+    screen = env.render(mode=<span class="hljs-string">'rgb_array'</span>).transpose((<span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>))
+    <span class="hljs-comment"># Cart is in the lower half, so strip off the top and bottom of the screen</span>
+    _, screen_height, screen_width = screen.shape
+    screen = screen[:, int(screen_height*<span class="hljs-number">0.4</span>):int(screen_height * <span class="hljs-number">0.8</span>)]
+    view_width = int(screen_width * <span class="hljs-number">0.6</span>)
+    cart_location = get_cart_location(screen_width)
+    <span class="hljs-keyword">if</span> cart_location &lt; view_width // <span class="hljs-number">2</span>:
+        slice_range = slice(view_width)
+    <span class="hljs-keyword">elif</span> cart_location &gt; (screen_width - view_width // <span class="hljs-number">2</span>):
+        slice_range = slice(-view_width, <span class="hljs-literal">None</span>)
+    <span class="hljs-keyword">else</span>:
+        slice_range = slice(cart_location - view_width // <span class="hljs-number">2</span>,
+                            cart_location + view_width // <span class="hljs-number">2</span>)
+    <span class="hljs-comment"># Strip off the edges, so that we have a square image centered on a cart</span>
+    screen = screen[:, :, slice_range]
+    <span class="hljs-comment"># Convert to float, rescale, convert to torch tensor</span>
+    <span class="hljs-comment"># (this doesn't require a copy)</span>
+    screen = np.ascontiguousarray(screen, dtype=np.float32) / <span class="hljs-number">255</span>
+    screen = torch.from_numpy(screen)
+    <span class="hljs-comment"># Resize, and add a batch dimension (BCHW)</span>
+    <span class="hljs-keyword">return</span> resize(screen).unsqueeze(<span class="hljs-number">0</span>)
+
+
+env.reset()
+plt.figure()
+plt.imshow(get_screen().cpu().squeeze(<span class="hljs-number">0</span>).permute(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>).numpy(),
+           interpolation=<span class="hljs-string">'none'</span>)
+plt.title(<span class="hljs-string">'Example extracted screen'</span>)
+plt.show()
+</div></code></pre>
+<h2 id="training">Training</h2>
+<p>Hyperparameters and utilities
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This cell instantiates our model and its optimizer, and defines some
+utilities:</p>
+<ul>
+<li><code>select_action</code> - will select an action accordingly to an epsilon
+greedy policy. Simply put, we'll sometimes use our model for choosing
+the action, and sometimes we'll just sample one uniformly. The
+probability of choosing a random action will start at <code>EPS_START</code>
+and will decay exponentially towards <code>EPS_END</code>. <code>EPS_DECAY</code>
+controls the rate of the decay.</li>
+<li><code>plot_durations</code> - a helper for plotting the durations of episodes,
+along with an average over the last 100 episodes (the measure used in
+the official evaluations). The plot will be underneath the cell
+containing the main training loop, and will update after every
+episode.</li>
+</ul>
+<pre class="hljs"><code><div>BATCH_SIZE = <span class="hljs-number">128</span>
+GAMMA = <span class="hljs-number">0.999</span>
+EPS_START = <span class="hljs-number">0.9</span>
+EPS_END = <span class="hljs-number">0.05</span>
+EPS_DECAY = <span class="hljs-number">200</span>
+TARGET_UPDATE = <span class="hljs-number">10</span>
+
+<span class="hljs-comment"># Get screen size so that we can initialize layers correctly based on shape</span>
+<span class="hljs-comment"># returned from AI gym. Typical dimensions at this point are close to 3x40x90</span>
+<span class="hljs-comment"># which is the result of a clamped and down-scaled render buffer in get_screen()</span>
+init_screen = get_screen()
+_, _, screen_height, screen_width = init_screen.shape
+
+<span class="hljs-comment"># Get number of actions from gym action space</span>
+n_actions = env.action_space.n
+
+policy_net = DQN(screen_height, screen_width, n_actions).to(device)
+target_net = DQN(screen_height, screen_width, n_actions).to(device)
+target_net.load_state_dict(policy_net.state_dict())
+target_net.eval()
+
+optimizer = optim.RMSprop(policy_net.parameters())
+memory = ReplayMemory(<span class="hljs-number">10000</span>)
+
+
+steps_done = <span class="hljs-number">0</span>
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">select_action</span><span class="hljs-params">(state)</span>:</span>
+    <span class="hljs-keyword">global</span> steps_done
+    sample = random.random()
+    eps_threshold = EPS_END + (EPS_START - EPS_END) * \
+        math.exp(<span class="hljs-number">-1.</span> * steps_done / EPS_DECAY)
+    steps_done += <span class="hljs-number">1</span>
+    <span class="hljs-keyword">if</span> sample &gt; eps_threshold:
+        <span class="hljs-keyword">with</span> torch.no_grad():
+            <span class="hljs-comment"># t.max(1) will return largest column value of each row.</span>
+            <span class="hljs-comment"># second column on max result is index of where max element was</span>
+            <span class="hljs-comment"># found, so we pick action with the larger expected reward.</span>
+            <span class="hljs-keyword">return</span> policy_net(state).max(<span class="hljs-number">1</span>)[<span class="hljs-number">1</span>].view(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> torch.tensor([[random.randrange(n_actions)]], device=device, dtype=torch.long)
+
+
+episode_durations = []
+
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_durations</span><span class="hljs-params">()</span>:</span>
+    plt.figure(<span class="hljs-number">2</span>)
+    plt.clf()
+    durations_t = torch.tensor(episode_durations, dtype=torch.float)
+    plt.title(<span class="hljs-string">'Training...'</span>)
+    plt.xlabel(<span class="hljs-string">'Episode'</span>)
+    plt.ylabel(<span class="hljs-string">'Duration'</span>)
+    plt.plot(durations_t.numpy())
+    <span class="hljs-comment"># Take 100 episode averages and plot them too</span>
+    <span class="hljs-keyword">if</span> len(durations_t) &gt;= <span class="hljs-number">100</span>:
+        means = durations_t.unfold(<span class="hljs-number">0</span>, <span class="hljs-number">100</span>, <span class="hljs-number">1</span>).mean(<span class="hljs-number">1</span>).view(<span class="hljs-number">-1</span>)
+        means = torch.cat((torch.zeros(<span class="hljs-number">99</span>), means))
+        plt.plot(means.numpy())
+
+    plt.pause(<span class="hljs-number">0.001</span>)  <span class="hljs-comment"># pause a bit so that plots are updated</span>
+    <span class="hljs-keyword">if</span> is_ipython:
+        display.clear_output(wait=<span class="hljs-literal">True</span>)
+        display.display(plt.gcf())
+</div></code></pre>
+<p>Training loop
+^^^^^^^^^^^^^</p>
+<p>Finally, the code for training our model.</p>
+<p>Here, you can find an <code>optimize_model</code> function that performs a
+single step of the optimization. It first samples a batch, concatenates
+all the tensors into a single one, computes $Q(s_t, a_t)$ and
+$V(s_{t+1}) = \max_a Q(s_{t+1}, a)$, and combines them into our
+loss. By definition we set $V(s) = 0$ if $s$ is a terminal
+state. We also use a target network to compute $V(s_{t+1})$ for
+added stability. The target network has its weights kept frozen most of
+the time, but is updated with the policy network's weights every so often.
+This is usually a set number of steps but we shall use episodes for
+simplicity.</p>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">optimize_model</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-keyword">if</span> len(memory) &lt; BATCH_SIZE:
+        <span class="hljs-keyword">return</span>
+    transitions = memory.sample(BATCH_SIZE)
+    <span class="hljs-comment"># Transpose the batch (see https://stackoverflow.com/a/19343/3343043 for</span>
+    <span class="hljs-comment"># detailed explanation). This converts batch-array of Transitions</span>
+    <span class="hljs-comment"># to Transition of batch-arrays.</span>
+    batch = Transition(*zip(*transitions))
+
+    <span class="hljs-comment"># Compute a mask of non-final states and concatenate the batch elements</span>
+    <span class="hljs-comment"># (a final state would've been the one after which simulation ended)</span>
+    non_final_mask = torch.tensor(tuple(map(<span class="hljs-keyword">lambda</span> s: s <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>,
+                                          batch.next_state)), device=device, dtype=torch.bool)
+    non_final_next_states = torch.cat([s <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> batch.next_state
+                                                <span class="hljs-keyword">if</span> s <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>])
+    state_batch = torch.cat(batch.state)
+    action_batch = torch.cat(batch.action)
+    reward_batch = torch.cat(batch.reward)
+
+    <span class="hljs-comment"># Compute Q(s_t, a) - the model computes Q(s_t), then we select the</span>
+    <span class="hljs-comment"># columns of actions taken. These are the actions which would've been taken</span>
+    <span class="hljs-comment"># for each batch state according to policy_net</span>
+    state_action_values = policy_net(state_batch).gather(<span class="hljs-number">1</span>, action_batch)
+
+    <span class="hljs-comment"># Compute V(s_{t+1}) for all next states.</span>
+    <span class="hljs-comment"># Expected values of actions for non_final_next_states are computed based</span>
+    <span class="hljs-comment"># on the "older" target_net; selecting their best reward with max(1)[0].</span>
+    <span class="hljs-comment"># This is merged based on the mask, such that we'll have either the expected</span>
+    <span class="hljs-comment"># state value or 0 in case the state was final.</span>
+    next_state_values = torch.zeros(BATCH_SIZE, device=device)
+    next_state_values[non_final_mask] = target_net(non_final_next_states).max(<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>].detach()
+    <span class="hljs-comment"># Compute the expected Q values</span>
+    expected_state_action_values = (next_state_values * GAMMA) + reward_batch
+
+    <span class="hljs-comment"># Compute Huber loss</span>
+    criterion = nn.SmoothL1Loss()
+    loss = criterion(state_action_values, expected_state_action_values.unsqueeze(<span class="hljs-number">1</span>))
+
+    <span class="hljs-comment"># Optimize the model</span>
+    optimizer.zero_grad()
+    loss.backward()
+    <span class="hljs-keyword">for</span> param <span class="hljs-keyword">in</span> policy_net.parameters():
+        param.grad.data.clamp_(<span class="hljs-number">-1</span>, <span class="hljs-number">1</span>)
+    optimizer.step()
+</div></code></pre>
+<p>Below, you can find the main training loop. At the beginning we reset
+the environment and initialize the <code>state</code> Tensor. Then, we sample
+an action, execute it, observe the next screen and the reward (always
+1), and optimize our model once. When the episode ends (our model
+fails), we restart the loop.</p>
+<p>Below, <code>num_episodes</code> is set small. You should download
+the notebook and run lot more epsiodes, such as 300+ for meaningful
+duration improvements.</p>
+<pre class="hljs"><code><div>num_episodes = <span class="hljs-number">50</span>
+<span class="hljs-keyword">for</span> i_episode <span class="hljs-keyword">in</span> range(num_episodes):
+    <span class="hljs-comment"># Initialize the environment and state</span>
+    env.reset()
+    last_screen = get_screen()
+    current_screen = get_screen()
+    state = current_screen - last_screen
+    <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> count():
+        <span class="hljs-comment"># Select and perform an action</span>
+        action = select_action(state)
+        _, reward, done, _ = env.step(action.item())
+        reward = torch.tensor([reward], device=device)
+
+        <span class="hljs-comment"># Observe new state</span>
+        last_screen = current_screen
+        current_screen = get_screen()
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> done:
+            next_state = current_screen - last_screen
+        <span class="hljs-keyword">else</span>:
+            next_state = <span class="hljs-literal">None</span>
+
+        <span class="hljs-comment"># Store the transition in memory</span>
+        memory.push(state, action, next_state, reward)
+
+        <span class="hljs-comment"># Move to the next state</span>
+        state = next_state
+
+        <span class="hljs-comment"># Perform one step of the optimization (on the policy network)</span>
+        optimize_model()
+        <span class="hljs-keyword">if</span> done:
+            episode_durations.append(t + <span class="hljs-number">1</span>)
+            plot_durations()
+            <span class="hljs-keyword">break</span>
+    <span class="hljs-comment"># Update the target network, copying all weights and biases in DQN</span>
+    <span class="hljs-keyword">if</span> i_episode % TARGET_UPDATE == <span class="hljs-number">0</span>:
+        target_net.load_state_dict(policy_net.state_dict())
+
+print(<span class="hljs-string">'Complete'</span>)
+env.render()
+env.close()
+plt.ioff()
+plt.show()
+</div></code></pre>
+<p>Here is the diagram that illustrates the overall resulting data flow.</p>
+<p>.. figure:: /_static/img/reinforcement_learning_diagram.jpg</p>
+<p>Actions are chosen either randomly or based on a policy, getting the next
+step sample from the gym environment. We record the results in the
+replay memory and also run optimization step on every iteration.
+Optimization picks a random batch from the replay memory to do training of the
+new policy. &quot;Older&quot; target_net is also used in optimization to compute the
+expected Q values; it is updated occasionally to keep it current.</p>
+
+</body>
+</html>

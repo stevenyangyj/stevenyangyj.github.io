@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>05_multi-armed-bandit and PG.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="multi-armed-bandit-problem-and-policy-gradient-optimization">Multi-armed Bandit problem and policy gradient optimization</h1>
+<p><img src="https://pic3.zhimg.com/80/7df0807ef2f606cea120e721d8f9a9d6_720w.jpg" alt="jupyter"></p>
+<p>In probability theory and machine learning, the multi-armed bandit problem (sometimes called the K or N-armed bandit problem) is a problem in which a fixed limited set of resources (money) must be allocated between competing (alternative) choices in a way that maximizes their expected return, when each choice's properties are only partially known at the time of allocation, and may become better understood as time passes or by allocating resources to the choice. This is a classic reinforcement learning problem that exemplifies the exploration–exploitation dilemma.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> torch <span class="hljs-keyword">as</span> th
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn 
+<span class="hljs-keyword">import</span> torch.nn.functional <span class="hljs-keyword">as</span> F
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-comment"># set environment</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ContextualBandit</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-string">'''contextual bandit problem'''</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self)</span>:</span>
+        self.state = <span class="hljs-number">0</span>
+        self.bandits = np.array([[<span class="hljs-number">.9</span>,<span class="hljs-number">.9</span>,<span class="hljs-number">.6</span>,<span class="hljs-number">-5</span>],[<span class="hljs-number">.7</span>,<span class="hljs-number">-5</span>,<span class="hljs-number">1</span>,<span class="hljs-number">.8</span>],[<span class="hljs-number">-5</span>,<span class="hljs-number">.9</span>,<span class="hljs-number">.6</span>,<span class="hljs-number">.8</span>],
+                                 [<span class="hljs-number">.5</span>,<span class="hljs-number">.6</span>,<span class="hljs-number">1</span>,<span class="hljs-number">-5</span>],[<span class="hljs-number">.4</span>,<span class="hljs-number">.5</span>,<span class="hljs-number">-5</span>,<span class="hljs-number">.8</span>],[<span class="hljs-number">.4</span>,<span class="hljs-number">-5</span>,<span class="hljs-number">.7</span>,<span class="hljs-number">.8</span>]])
+        self.num_bandits = self.bandits.shape[<span class="hljs-number">0</span>]
+        self.num_actions = self.bandits.shape[<span class="hljs-number">1</span>]
+        
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_state</span><span class="hljs-params">(self)</span>:</span>
+        self.state = np.random.randint(self.num_bandits)
+        
+        <span class="hljs-keyword">return</span> self.state
+    
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">pull_arm</span><span class="hljs-params">(self, action)</span>:</span>
+        bandit = self.bandits[self.state, action]
+        result = np.random.rand()
+        <span class="hljs-keyword">if</span> result &gt; bandit:
+            <span class="hljs-comment"># return a postive reward</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-comment"># return a negative reward</span>
+            <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-comment"># set agent policy network vector, length of vector is equal to the number of bandits</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">agent</span><span class="hljs-params">(nn.Module)</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, input_s, output_s)</span>:</span>
+        super(agent, self).__init__()
+        self.net = nn.Sequential(
+                    nn.Linear(input_s, output_s),
+                    nn.Sigmoid())
+        
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span><span class="hljs-params">(self, x)</span>:</span>
+        <span class="hljs-keyword">return</span> self.net(x)
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">loss</span><span class="hljs-params">(nn.Module)</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self)</span>:</span>
+        super(loss, self).__init__()
+        
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span><span class="hljs-params">(self, output, action, reward)</span>:</span>
+        loss = -(th.log(output[<span class="hljs-number">0</span>, action])*reward)
+        <span class="hljs-keyword">return</span> loss
+</div></code></pre>
+<pre class="hljs"><code><div><span class="hljs-comment"># set experimental hyper-parameters</span>
+env = ContextualBandit()
+learner = agent(env.num_bandits, env.num_actions).cuda()
+loss_fun = loss()
+one_hot = F.one_hot(th.arange(<span class="hljs-number">0</span>, env.num_bandits)).float().cuda() <span class="hljs-comment"># 6 bandits, for each one, we have 4 actions. one-hot decoding</span>
+print(one_hot)
+epochs = <span class="hljs-number">30000</span>
+epsilon = <span class="hljs-number">0.5</span> <span class="hljs-comment"># epsilon for exploration</span>
+optimizer = th.optim.Adam(learner.parameters(), lr = <span class="hljs-number">0.001</span>)
+total_reward = np.zeros([env.num_bandits,env.num_actions])
+</div></code></pre>
+<pre><code>tensor([[1., 0., 0., 0., 0., 0.],
+        [0., 1., 0., 0., 0., 0.],
+        [0., 0., 1., 0., 0., 0.],
+        [0., 0., 0., 1., 0., 0.],
+        [0., 0., 0., 0., 1., 0.],
+        [0., 0., 0., 0., 0., 1.]], device='cuda:0')
+</code></pre>
+<pre class="hljs"><code><div><span class="hljs-string">''' training loop '''</span>
+ret_curs = np.empty((epochs, env.num_bandits)) <span class="hljs-comment"># just for recoding the results</span>
+<span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> range(epochs):
+    
+    s = env.get_state() <span class="hljs-comment">#Get a state from the environment. s is equal to 0, 1, 2, 3 ,4, 5</span>
+    
+    <span class="hljs-comment">#Choose either a random action or one from our policy network.</span>
+    <span class="hljs-keyword">if</span> np.random.rand() &lt; epsilon:
+        pro_list = learner.forward(one_hot[s,:].unsqueeze(<span class="hljs-number">0</span>)) <span class="hljs-comment"># pro_list looks like [0.1, 0.5, 0.4, 0.9]</span>
+        action = np.random.randint(env.num_actions)
+    <span class="hljs-keyword">else</span>:
+        pro_list = learner.forward(one_hot[s,:].unsqueeze(<span class="hljs-number">0</span>))
+        action = th.argmax(pro_list)
+        
+    reward = env.pull_arm(action) <span class="hljs-comment">#reward for taking an action given a bandit. # In GYM env, this function is env.step(action)</span>
+
+    <span class="hljs-comment">#Update the network using gradient descent.</span>
+    loss_v = loss_fun(pro_list, action, reward)
+    optimizer.zero_grad()
+    loss_v.backward()
+    optimizer.step()
+    
+    total_reward[s, action] += reward
+    <span class="hljs-keyword">if</span> epoch % <span class="hljs-number">500</span> == <span class="hljs-number">0</span>:
+        print(<span class="hljs-string">'Loss: {}'</span>.format(loss_v.item()))
+        print(<span class="hljs-string">"Epoch {}"</span>.format(epoch)+<span class="hljs-string">", average reward for "</span> + str(env.num_bandits) + 
+              <span class="hljs-string">" bandits: "</span> + str(np.mean(total_reward,axis=<span class="hljs-number">1</span>)))
+    ret_curs[epoch, :] = np.mean(total_reward,axis=<span class="hljs-number">1</span>)
+</div></code></pre>
+<pre><code>Loss: -0.4786739647388458
+Epoch 0, average reward for 6 bandits: [ 0.   -0.25  0.    0.    0.    0.  ]
+Loss: 0.6160480380058289
+Epoch 500, average reward for 6 bandits: [ -5.5  -13.    -1.5   -1.25  14.    11.  ]
+Loss: 0.4844084680080414
+Epoch 1000, average reward for 6 bandits: [ 2.   -9.5  -4.5  -3.   25.75 21.  ]
+Loss: 0.39806902408599854
+Epoch 1500, average reward for 6 bandits: [ 12.5   -4.25 -11.    -1.75  37.    32.25]
+Loss: 0.3254687190055847
+Epoch 2000, average reward for 6 bandits: [ 21.25   4.25 -18.25  -2.25  47.5   42.75]
+Loss: -0.5617161989212036
+Epoch 2500, average reward for 6 bandits: [ 31.75  13.25 -25.    -9.25  60.5   54.5 ]
+Loss: 0.643558919429779
+Epoch 3000, average reward for 6 bandits: [ 40.5   22.25 -28.5  -12.    70.5   63.5 ]
+Loss: -0.768932580947876
+Epoch 3500, average reward for 6 bandits: [ 49.    26.75 -31.75 -20.25  83.75  73.75]
+Loss: 0.21624061465263367
+Epoch 4000, average reward for 6 bandits: [ 59.    36.   -27.75 -27.   100.    82.5 ]
+Loss: -0.9087262749671936
+Epoch 4500, average reward for 6 bandits: [ 64.5   40.5  -20.5  -28.5  113.25  92.5 ]
+Loss: -0.4295955002307892
+Epoch 5000, average reward for 6 bandits: [ 73.5   47.5  -13.25 -31.5  124.75 101.75]
+Loss: 0.6299682855606079
+Epoch 5500, average reward for 6 bandits: [ 82.    58.75  -6.75 -37.25 144.   113.5 ]
+Loss: -0.45049455761909485
+Epoch 6000, average reward for 6 bandits: [ 84.5   63.5    3.25 -40.   160.25 124.75]
+Loss: -0.44918757677078247
+Epoch 6500, average reward for 6 bandits: [ 94.    72.25  11.25 -40.25 174.   135.5 ]
+Loss: 0.4667981266975403
+Epoch 7000, average reward for 6 bandits: [ 96.25  80.25  23.25 -41.75 185.25 148.5 ]
+Loss: 0.0868447795510292
+Epoch 7500, average reward for 6 bandits: [106.    87.25  29.5  -48.   193.75 158.25]
+Loss: 0.1669708788394928
+Epoch 8000, average reward for 6 bandits: [112.    89.    39.   -49.   201.5  164.75]
+Loss: 0.1477862000465393
+Epoch 8500, average reward for 6 bandits: [118.5   96.5   50.25 -50.75 211.   180.75]
+Loss: 0.06405366212129593
+Epoch 9000, average reward for 6 bandits: [127.25 103.75  58.5  -50.25 227.   187.  ]
+Loss: -1.8130145072937012
+Epoch 9500, average reward for 6 bandits: [130.75 108.    69.   -50.25 241.25 196.5 ]
+Loss: -1.9353488683700562
+Epoch 10000, average reward for 6 bandits: [138.   117.75  80.75 -54.   254.75 204.5 ]
+Loss: 0.09376132488250732
+Epoch 10500, average reward for 6 bandits: [144.75 124.25  90.75 -46.5  264.75 212.25]
+Loss: 0.0540563128888607
+Epoch 11000, average reward for 6 bandits: [149.5  134.   101.   -39.75 279.   223.5 ]
+Loss: 0.06130532920360565
+Epoch 11500, average reward for 6 bandits: [156.75 144.75 110.5  -30.   294.25 233.  ]
+Loss: 0.26718059182167053
+Epoch 12000, average reward for 6 bandits: [165.   151.   115.25 -20.25 308.   244.25]
+Loss: 0.04897436499595642
+Epoch 12500, average reward for 6 bandits: [171.25 154.75 122.25  -8.5  321.25 254.25]
+Loss: 0.037617262452840805
+Epoch 13000, average reward for 6 bandits: [180.5  163.5  132.25   1.   332.25 266.75]
+Loss: -0.8977076411247253
+Epoch 13500, average reward for 6 bandits: [186.5  162.5  145.     9.5  348.75 277.5 ]
+Loss: -2.1589345932006836
+Epoch 14000, average reward for 6 bandits: [199.25 171.   153.75  19.5  358.75 285.5 ]
+Loss: -2.171229362487793
+Epoch 14500, average reward for 6 bandits: [207.   176.75 160.75  32.25 370.5  296.  ]
+Loss: 0.5655964612960815
+Epoch 15000, average reward for 6 bandits: [211.75 183.25 171.25  38.   382.75 309.75]
+Loss: 0.14822879433631897
+Epoch 15500, average reward for 6 bandits: [219.75 187.75 179.    49.5  393.   320.75]
+Loss: 0.13646237552165985
+Epoch 16000, average reward for 6 bandits: [232.25 194.5  190.25  61.25 405.   332.5 ]
+Loss: 0.5858373641967773
+Epoch 16500, average reward for 6 bandits: [242.   203.75 199.5   74.25 418.   343.75]
+Loss: 0.02253393828868866
+Epoch 17000, average reward for 6 bandits: [246.25 209.5  211.    83.75 429.75 355.  ]
+Loss: -2.5053722858428955
+Epoch 17500, average reward for 6 bandits: [257.75 218.   221.25  96.   440.25 366.  ]
+Loss: 0.019560683518648148
+Epoch 18000, average reward for 6 bandits: [262.5  225.   228.25 102.   452.5  379.5 ]
+Loss: 0.01915869116783142
+Epoch 18500, average reward for 6 bandits: [271.75 233.75 236.5  109.75 464.5  387.5 ]
+Loss: 0.016413304954767227
+Epoch 19000, average reward for 6 bandits: [278.5  244.25 245.   117.25 477.5  398.25]
+Loss: -3.487902879714966
+Epoch 19500, average reward for 6 bandits: [285.75 251.25 256.5  131.25 486.75 409.75]
+Loss: 0.03205582872033119
+Epoch 20000, average reward for 6 bandits: [290.5  257.75 263.5  142.   497.   423.  ]
+Loss: 0.07104405015707016
+Epoch 20500, average reward for 6 bandits: [305.25 266.75 270.75 153.75 504.75 434.5 ]
+Loss: -3.6013762950897217
+Epoch 21000, average reward for 6 bandits: [317.5  274.   279.25 164.25 518.25 447.  ]
+Loss: 0.012107114307582378
+Epoch 21500, average reward for 6 bandits: [324.5  284.   289.75 176.25 532.25 458.  ]
+Loss: 0.011592867784202099
+Epoch 22000, average reward for 6 bandits: [325.5  291.75 298.25 186.   546.75 469.5 ]
+Loss: -5.822903156280518
+Epoch 22500, average reward for 6 bandits: [333.   299.5  304.75 195.5  562.   483.  ]
+Loss: 0.05131074786186218
+Epoch 23000, average reward for 6 bandits: [342.5  308.75 315.5  205.5  574.25 493.25]
+Loss: 1.4125031232833862
+Epoch 23500, average reward for 6 bandits: [351.5  315.25 323.75 214.25 584.75 504.25]
+Loss: 0.008369864895939827
+Epoch 24000, average reward for 6 bandits: [355.75 322.5  335.5  223.75 600.   514.75]
+Loss: -6.363825798034668
+Epoch 24500, average reward for 6 bandits: [361.   329.   345.25 234.25 610.5  524.75]
+Loss: 0.007805091328918934
+Epoch 25000, average reward for 6 bandits: [369.25 335.5  355.5  245.75 623.   535.75]
+Loss: -2.789208173751831
+Epoch 25500, average reward for 6 bandits: [378.   338.   363.75 261.   635.5  545.  ]
+Loss: 0.0063230800442397594
+Epoch 26000, average reward for 6 bandits: [384.   348.75 372.75 267.5  648.5  556.25]
+Loss: 0.015409693121910095
+Epoch 26500, average reward for 6 bandits: [388.5  359.75 381.25 274.25 660.5  570.  ]
+Loss: 5.33942985534668
+Epoch 27000, average reward for 6 bandits: [393.   367.75 387.75 284.25 673.5  578.5 ]
+Loss: 0.029215874150395393
+Epoch 27500, average reward for 6 bandits: [398.75 374.5  394.25 294.75 685.5  588.5 ]
+Loss: 0.004772469867020845
+Epoch 28000, average reward for 6 bandits: [407.75 384.   404.5  304.   699.   600.  ]
+Loss: 0.005354947876185179
+Epoch 28500, average reward for 6 bandits: [418.   391.75 413.75 313.   714.25 612.5 ]
+Loss: 0.024006973952054977
+Epoch 29000, average reward for 6 bandits: [427.   398.25 422.   321.25 729.75 623.  ]
+Loss: 0.8179153203964233
+Epoch 29500, average reward for 6 bandits: [439.   404.5  428.75 328.75 747.   634.25]
+</code></pre>
+<pre class="hljs"><code><div>output = learner.forward(one_hot).cpu().detach().numpy()
+<span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> range(env.num_bandits):
+    print(<span class="hljs-string">"The agent thinks action "</span> + str(np.argmax(output[a,:])+<span class="hljs-number">1</span>) + <span class="hljs-string">" for bandit "</span> + str(a+<span class="hljs-number">1</span>) + <span class="hljs-string">" is the most promising"</span>)
+    <span class="hljs-keyword">if</span> np.argmax(output[a,:]) == np.argmin(env.bandits[a,:]):
+        print(<span class="hljs-string">"and it was right!"</span>)
+    <span class="hljs-keyword">else</span>:
+        print(<span class="hljs-string">"and it was wrong!"</span>)
+        
+print(<span class="hljs-string">"Bandit matrix:"</span>)
+print(np.array([[<span class="hljs-number">.9</span>,<span class="hljs-number">.9</span>,<span class="hljs-number">.6</span>,<span class="hljs-number">-5</span>],[<span class="hljs-number">.7</span>,<span class="hljs-number">-5</span>,<span class="hljs-number">1</span>,<span class="hljs-number">.8</span>],[<span class="hljs-number">-5</span>,<span class="hljs-number">.9</span>,<span class="hljs-number">.6</span>,<span class="hljs-number">.8</span>],[<span class="hljs-number">.5</span>,<span class="hljs-number">.6</span>,<span class="hljs-number">1</span>,<span class="hljs-number">-5</span>],[<span class="hljs-number">.4</span>,<span class="hljs-number">.5</span>,<span class="hljs-number">-5</span>,<span class="hljs-number">.8</span>],[<span class="hljs-number">.4</span>,<span class="hljs-number">-5</span>,<span class="hljs-number">.7</span>,<span class="hljs-number">.8</span>]]))
+</div></code></pre>
+<pre><code>The agent thinks action 4 for bandit 1 is the most promising
+and it was right!
+The agent thinks action 2 for bandit 2 is the most promising
+and it was right!
+The agent thinks action 1 for bandit 3 is the most promising
+and it was right!
+The agent thinks action 4 for bandit 4 is the most promising
+and it was right!
+The agent thinks action 3 for bandit 5 is the most promising
+and it was right!
+The agent thinks action 2 for bandit 6 is the most promising
+and it was right!
+Bandit matrix:
+[[ 0.9  0.9  0.6 -5. ]
+ [ 0.7 -5.   1.   0.8]
+ [-5.   0.9  0.6  0.8]
+ [ 0.5  0.6  1.  -5. ]
+ [ 0.4  0.5 -5.   0.8]
+ [ 0.4 -5.   0.7  0.8]]
+</code></pre>
+<pre class="hljs"><code><div>plt.figure()
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(env.num_bandits):
+    plt.plot(ret_curs[:, i], label=<span class="hljs-string">'Bandit No.'</span>+str(i+<span class="hljs-number">1</span>))
+plt.legend()
+plt.ylabel(<span class="hljs-string">'Return'</span>)
+plt.xlabel(<span class="hljs-string">'Epochs'</span>)
+plt.show()
+plt.close()
+</div></code></pre>
+<p><img src="file:///Users/overeuro/Downloads/05_multi-armed-bandit and PG/output_10_0.png" alt="png"></p>
+<pre class="hljs"><code><div>
+</div></code></pre>
+
+</body>
+</html>
