@@ -8,8 +8,7 @@ redirect_from:
   - /about.html
 ---
 
-I am a research scientist at [Tencent AI Lab](https://ai.tencent.com/ailab/en/index). My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published multiple papers at top-tier AI/ML venues such as ICML, ICLR, CVPR, IJCAI, etc. 
-<!-- I am the recipient of the [Best Student Paper Award at ICDM 2013](https://tianyizhou.files.wordpress.com/2010/08/dca-paper.pdf) and the [2020 IEEE TCSC Most Influential Paper Award](http://www.icml-2011.org/papers/41_icmlpaper.pdf). -->
+I am a research scientist at Tencent Game AI. My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published multiple papers at top-tier AI/ML venues such as ICML, ICLR, CVPR, IJCAI, etc.
 
 My recent research focuses on training generalist AI agents in complex environments through reinforcement and imitation learning, leveraging the rich prior knowledge from pretrained foundation models such as LLMs, VLMs, and video generation models. A highlight of my recent work has been featured by [MIT Technology Review China](https://www.mittrchina.com/news/detail/13249).
 
