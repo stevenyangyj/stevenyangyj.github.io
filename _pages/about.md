@@ -18,6 +18,10 @@ I gained valuable industry experience as a research intern at JD Explore Academy
 
 - <font color=red> I am open to collaboration and discussion. Please reach out if you are interested. </font>
 
+News
+=======
+- [2024-11] One paper ([*A Python Library for Black-box Optimization*](https://jmlr.org/papers/v25/23-0386.html)) has been accepted by JMLR.
+
 Selected papers
 =======
 
