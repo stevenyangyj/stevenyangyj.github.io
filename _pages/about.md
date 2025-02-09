@@ -20,6 +20,7 @@ I gained valuable industry experience as a research intern at JD Explore Academy
 News
 =======
 - [2024-11] One paper ([*A Python Library for Black-box Optimization*](https://jmlr.org/papers/v25/23-0386.html)) has been accepted by JMLR.
+- [2025-01] We released a new benchmark for assessing the core reasoning capabilities of large multimodal models, [**MM-IQ**](https://acechq.github.io/MMIQ-benchmark/).
 
 Selected papers
 =======
