@@ -19,9 +19,9 @@ I gained valuable industry experience as a research intern at JD Explore Academy
 
 News
 =======
-- [2024-11] One paper ([*A Python Library for Black-box Optimization*](https://jmlr.org/papers/v25/23-0386.html)) has been accepted by JMLR.
+- [2025-02] I have been awarded the 2024 DEAN'S LIST by UTS Faculty of Engineering & Information Technology for my excellent PhD thesis and research achievements.
 - [2025-01] We released a new benchmark [*MM-IQ*](https://acechq.github.io/MMIQ-benchmark/) for assessing the core reasoning capabilities of large multimodal models.
-- [2025-02] I have been awarded the 2024 DEAN'S LIST by UTS Faculty of Engineering & Information Technology for my excellent PhD thesis and reserach achievements.
+- [2024-11] One paper ([*A Python Library for Black-box Optimization*](https://jmlr.org/papers/v25/23-0386.html)) has been accepted by JMLR.
 
 Selected papers
 =======
