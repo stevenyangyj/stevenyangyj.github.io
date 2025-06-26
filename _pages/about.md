@@ -19,6 +19,7 @@ I gained valuable industry experience as a research intern at JD Explore Academy
 
 News
 =======
+- [2025-06] One paper (VLM Agents Trained with RL) has been accepted by [ICCV 2025](https://iccv.thecvf.com/). Congrats on weitong's first top-tier conference paper!
 - [2025-05] One paper (findings) has been accepted by [ACL 2025](https://2025.aclweb.org/). [[PDF]](https://www.arxiv.org/abs/2506.07390), [[CODE]](https://github.com/Xin-Cheng-Wen/PO4Vul)
 - [2025-03] We identified a critical challenge in RL-based VLM agent training and proposed an innovative solution [*Guided Thought Reinforcement (GTR)*](https://arxiv.org/abs/2503.08525) that combines the strengths of RL and IL.
 - [2025-02] I have been awarded the 2024 DEAN'S LIST by UTS Faculty of Engineering & Information Technology for my excellent PhD thesis and research achievements.
