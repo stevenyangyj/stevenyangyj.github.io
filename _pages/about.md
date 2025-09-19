@@ -8,7 +8,7 @@ redirect_from:
   - /about.html
 ---
 
-I am a research scientist at Tencent Game AI. My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published multiple papers at top-tier AI/ML venues such as ICML, ICLR, CVPR, IJCAI, etc.
+I am a research scientist at Tencent Game AI. My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published some papers at top-tier AI/ML venues such as ICML, ICLR, NeurIPS, CVPR, ICCV, etc.
 
 My recent research focuses on training generalist AI agents in complex environments through reinforcement and imitation learning, leveraging the rich prior knowledge from pretrained foundation models such as LLMs, VLMs, and video generation models. A highlight of my recent work has been featured by [MIT Technology Review China](https://www.mittrchina.com/news/detail/13249).
 
@@ -18,6 +18,7 @@ I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-eng
 
 News
 =======
+- [2025-09] One paper (World model-based LLM Agent, WALL-E) was accepted by [NeurIPS 2025](https://neurips.cc/). [[PDF]](https://arxiv.org/abs/2504.15785)
 - [2025-06] One paper (VLM Agents Trained with RL) has been accepted by [ICCV 2025](https://iccv.thecvf.com/). Congrats to Tong Wei for his first top-tier conference paper! [[PDF]](https://arxiv.org/abs/2503.08525), [[CODE]](https://github.com/weit123/GTR)
 - [2025-05] One paper (findings) has been accepted by [ACL 2025](https://2025.aclweb.org/). [[PDF]](https://www.arxiv.org/abs/2506.07390), [[CODE]](https://github.com/Xin-Cheng-Wen/PO4Vul)
 - [2025-03] We identified a critical challenge in RL-based VLM agent training and proposed an innovative solution [*Guided Thought Reinforcement (GTR)*](https://arxiv.org/abs/2503.08525) that combines the strengths of RL and IL.
