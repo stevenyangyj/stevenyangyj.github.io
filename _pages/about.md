@@ -30,7 +30,7 @@ I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-eng
 </ul>
 </div>
 
-Selected papers
+Selected Papers
 =======
 
 Other papers can be found on my [Google Scholar page](https://scholar.google.com/citations?user=X0quXnsAAAAJ&hl=en).
