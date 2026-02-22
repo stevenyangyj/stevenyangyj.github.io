@@ -16,16 +16,19 @@ I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-eng
 
 - <font color=red> I am open to collaboration and discussion. Please reach out if you are interested. </font>
 
-News
-=======
-- [2026-02] One paper (GTR-Turbo) was accepted by [CVPR 2026](https://cvpr.thecvf.com/). [[PDF]](https://arxiv.org/abs/2512.13043)
-- [2025-09] One paper (World model-based LLM Agent, WALL-E) was accepted by [NeurIPS 2025](https://neurips.cc/). [[PDF]](https://arxiv.org/abs/2504.15785)
-- [2025-06] One paper (VLM Agents Trained with RL) has been accepted by [ICCV 2025](https://iccv.thecvf.com/). Congrats to Tong Wei for his first top-tier conference paper! [[PDF]](https://arxiv.org/abs/2503.08525), [[CODE]](https://github.com/weit123/GTR)
-- [2025-05] One paper (findings) has been accepted by [ACL 2025](https://2025.aclweb.org/). [[PDF]](https://www.arxiv.org/abs/2506.07390), [[CODE]](https://github.com/Xin-Cheng-Wen/PO4Vul)
-- [2025-03] We identified a critical challenge in RL-based VLM agent training and proposed an innovative solution [*Guided Thought Reinforcement (GTR)*](https://arxiv.org/abs/2503.08525) that combines the strengths of RL and IL.
-- [2025-02] I have been awarded the 2024 DEAN'S LIST by UTS Faculty of Engineering & Information Technology for my excellent PhD thesis and research achievements.
-- [2025-01] We released a new benchmark [*MM-IQ*](https://acechq.github.io/MMIQ-benchmark/) for assessing the core reasoning capabilities of large multimodal models.
-- [2024-11] One paper ([*A Python Library for Black-box Optimization*](https://jmlr.org/papers/v25/23-0386.html)) has been accepted by JMLR MLOOS.
+<h2>News</h2>
+<div class="news-scroll">
+<ul>
+  <li>[2026-02] One paper (GTR-Turbo) was accepted by <a href="https://cvpr.thecvf.com/">CVPR 2026</a>. <a href="https://arxiv.org/abs/2512.13043">[PDF]</a></li>
+  <li>[2025-09] One paper (World model-based LLM Agent, WALL-E) was accepted by <a href="https://neurips.cc/">NeurIPS 2025</a>. <a href="https://arxiv.org/abs/2504.15785">[PDF]</a></li>
+  <li>[2025-06] One paper (VLM Agents Trained with RL) has been accepted by <a href="https://iccv.thecvf.com/">ICCV 2025</a>. Congrats to Tong Wei for his first top-tier conference paper! <a href="https://arxiv.org/abs/2503.08525">[PDF]</a>, <a href="https://github.com/weit123/GTR">[CODE]</a></li>
+  <li>[2025-05] One paper (findings) has been accepted by <a href="https://2025.aclweb.org/">ACL 2025</a>. <a href="https://www.arxiv.org/abs/2506.07390">[PDF]</a>, <a href="https://github.com/Xin-Cheng-Wen/PO4Vul">[CODE]</a></li>
+  <li>[2025-03] We identified a critical challenge in RL-based VLM agent training and proposed an innovative solution <a href="https://arxiv.org/abs/2503.08525"><em>Guided Thought Reinforcement (GTR)</em></a> that combines the strengths of RL and IL.</li>
+  <li>[2025-02] I have been awarded the 2024 DEAN'S LIST by UTS Faculty of Engineering &amp; Information Technology for my excellent PhD thesis and research achievements.</li>
+  <li>[2025-01] We released a new benchmark <a href="https://acechq.github.io/MMIQ-benchmark/"><em>MM-IQ</em></a> for assessing the core reasoning capabilities of large multimodal models.</li>
+  <li>[2024-11] One paper (<a href="https://jmlr.org/papers/v25/23-0386.html"><em>A Python Library for Black-box Optimization</em></a>) has been accepted by JMLR MLOOS.</li>
+</ul>
+</div>
 
 Selected papers
 =======
