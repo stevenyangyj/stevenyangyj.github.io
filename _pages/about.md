@@ -16,7 +16,7 @@ I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-eng
 
 - <font color=red> I am open to collaboration and discussion. Please reach out if you are interested. </font>
 
-<h2>News</h2>
+<h1>News</h1>
 <div class="news-scroll">
 <ul>
   <li>[2026-02] One paper (GTR-Turbo) was accepted by <a href="https://cvpr.thecvf.com/">CVPR 2026</a>. <a href="https://arxiv.org/abs/2512.13043">[PDF]</a></li>
