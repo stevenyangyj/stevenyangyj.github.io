@@ -14,7 +14,11 @@ My recent research focuses on training generalist AI agents in complex environme
 
 I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-engineering-and-information-technology/computer-science) from the [University of Technology Sydney (UTS)](https://www.uts.edu.au/), where I was an active member of the research group led by [Prof. Chengqi Zhang](https://profiles.uts.edu.au/Chengqi.Zhang). During my academic journey, I have closely collaborated with [Prof. Tianyi Zhou](https://tianyizhou.github.io/) from the [University of Maryland, College Park](https://www.umd.edu/). I gained valuable industry experience as a research intern at JD Explore Academy, under the mentorship of [Prof. Li Shen](https://sites.google.com/site/mathshenli/home) from Sun Yat-sen University, and within the team led by [Dr. Xiaodong He](https://scholar.google.com/citations?user=W5WbqgoAAAAJ&hl=en). I also contributed to the development of advanced multimodal models as a researcher at [Tencent Hunyuan](https://hunyuan.tencent.com/), working under the guidance of [Dr. Wei Liu](https://scholar.google.com/citations?user=AjxoEpIAAAAJ&hl=en). You are welcome to see more details in my CV: [English](../assets/cv_yijun.pdf) and [中文](../assets/杨一君-cv-含联系信息.pdf).
 
-- <font color=red> I am open to collaboration and discussion. Please reach out if you are interested. </font>
+- <font color=red> I am open to collaboration and discussion. Please reach out if you are interested: </font><span id="obf-email" data-u="yijun.steven.yang" data-a="&#64;" data-d="gmail&#46;com" class="obf-email-link"></span><noscript>[Enable JavaScript to see email]</noscript>
+
+<script>
+(function(){var el=document.getElementById('obf-email');if(el){var u=el.getAttribute('data-u');var a=el.getAttribute('data-a');var d=el.getAttribute('data-d');var addr=u+a+d;el.innerHTML='<a href="ma'+'ilto:'+addr+'">'+addr+'</a>';}})();
+</script>
 
 <h1>News</h1>
 <div class="news-scroll">
