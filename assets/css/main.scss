@@ -39,3 +39,12 @@
 @import "vendor/font-awesome/brands";
 @import "vendor/magnific-popup/magnific-popup";
 @import "print";
+
+.prominent-strike {
+  color: #8f1d1d;
+  font-weight: 700;
+  text-decoration-line: line-through;
+  text-decoration-color: #d62828;
+  text-decoration-thickness: 0.18em;
+  text-decoration-skip-ink: none;
+}
