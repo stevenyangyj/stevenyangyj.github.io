@@ -8,7 +8,7 @@ redirect_from:
   - /about.html
 ---
 
-I am a researcher at <span class="prominent-strike">Tencent AL Lab</span>. My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published some papers at top-tier AI/ML venues such as ICML, ICLR, NeurIPS, CVPR, ICCV, etc.
+I was a researcher at <span class="prominent-strike">Tencent AL Lab</span>. My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published some papers at top-tier AI/ML venues such as ICML, ICLR, NeurIPS, CVPR, ICCV, etc.
 
 My recent research focuses on training generalist AI agents in complex environments through reinforcement and imitation learning, leveraging the rich prior knowledge from pretrained foundation models such as LLMs, VLMs, and video generation models. A highlight of my recent work has been featured by [MIT Technology Review China](https://www.mittrchina.com/news/detail/13249).
 
