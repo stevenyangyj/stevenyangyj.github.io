@@ -23,6 +23,7 @@ I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-eng
 <h1>News</h1>
 <div class="news-scroll">
 <ul>
+  <li>[2026-06] Two papers (multimodal agent and efficient agentic RL) were accepted by <a href="https://eccv.ecva.net/">ECCV 2026</a>.</li>
   <li>[2026-02] One paper (GTR-Turbo) was accepted by <a href="https://cvpr.thecvf.com/">CVPR 2026</a>. <a href="https://arxiv.org/abs/2512.13043">[PDF]</a>, <a href="https://github.com/weit123/GTR-Turbo">[CODE]</a></li>
   <li>[2025-09] One paper (World model-based LLM Agent, WALL-E) was accepted by <a href="https://neurips.cc/">NeurIPS 2025</a>. <a href="https://arxiv.org/abs/2504.15785">[PDF]</a></li>
   <li>[2025-06] One paper (VLM Agents Trained with RL) has been accepted by <a href="https://iccv.thecvf.com/">ICCV 2025</a>. Congrats to Tong Wei for his first top-tier conference paper! <a href="https://arxiv.org/abs/2503.08525">[PDF]</a>, <a href="https://github.com/weit123/GTR">[CODE]</a></li>
