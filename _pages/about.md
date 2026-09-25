@@ -8,16 +8,51 @@ redirect_from:
   - /about.html
 ---
 
-I am currently a postdoctoral researcher at [Knowledge Engineering Group (KEG)](https://keg.cs.tsinghua.edu.cn/), Tsinghua University, and also a researcher at [Z.ai](https://z.ai/company), where I contribute to the post-training of GLM models, including but not limited to SFT, RL, OPD, and slime infrastructure. A recent highlight of this work is [GLM-5.2](https://z.ai/blog/glm-5.2). My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published some papers at top-tier AI/ML venues such as ICML, ICLR, NeurIPS, CVPR, ICCV, etc.
+I am currently a postdoctoral researcher at [Knowledge Engineering Group (KEG)](https://keg.cs.tsinghua.edu.cn/), Tsinghua University, and also a researcher at [Z.ai](https://z.ai/company), where I contribute to the post-training of GLM models, including but not limited to SFT, RL, OPD, and slime infrastructure. Recent highlights of this work include [GLM-5.3](https://z.ai/blog/glm-5.3) and [GLM-5.2](https://z.ai/blog/glm-5.2). My research interests are in reinforcement learning, machine learning, and LLM/VLM based AI Agents. I have published some papers at top-tier AI/ML venues such as ICML, ICLR, NeurIPS, CVPR, ICCV, etc.
 
-My recent research focuses on training generalist AI agents in complex environments through reinforcement and imitation learning, leveraging the rich prior knowledge from pretrained foundation models such as LLMs, VLMs, and video generation models. A highlight of my recent work has been featured by [MIT Technology Review China](https://www.mittrchina.com/news/detail/13249).
+My recent research focuses on training generalist AI agents in complex environments through reinforcement and imitation learning, leveraging the rich prior knowledge from pretrained foundation models such as LLMs, VLMs, and video generation models. <!-- A highlight of my recent work has been featured by [MIT Technology Review China](https://www.mittrchina.com/news/detail/13249). -->
 
 I earned my Ph.D. in [Computer Science](https://www.uts.edu.au/about/faculty-engineering-and-information-technology/computer-science) from the [University of Technology Sydney (UTS)](https://www.uts.edu.au/), where I was an active member of the research group led by [Prof. Chengqi Zhang](https://profiles.uts.edu.au/Chengqi.Zhang). During my academic journey, I have closely collaborated with [Prof. Tianyi Zhou](https://tianyizhou.github.io/). I also gained industry experience as a research intern at JD Explore Academy and contributed to the development of advanced multimodal models as a researcher at [Tencent Hunyuan](https://hunyuan.tencent.com/).
 
-- <font color=red> I am open to collaboration and discussion. Please reach out if you are interested: </font><span id="obf-email" data-u="yijun.steven.yang" data-a="&#64;" data-d="gmail&#46;com" class="obf-email-link"></span><noscript>[Enable JavaScript to see email]</noscript>
+<div class="contact-card">
+  <span class="contact-card__icon"><i class="fa fa-solid fa-envelope" aria-hidden="true"></i></span>
+  <div class="contact-card__body">
+    <span class="contact-card__title">I am open to collaboration and discussion.</span>
+    <span class="contact-card__text">Please reach out if you are interested.</span>
+    <span class="contact-card__email">
+      <span id="obf-email" data-u="yijun.steven.yang" data-a="&#64;" data-d="gmail&#46;com" class="obf-email-link"></span><noscript>[Enable JavaScript to see email]</noscript>
+      <button type="button" id="copy-email" class="contact-card__copy" aria-label="Copy email address" style="display:none;">
+        <i class="fa fa-solid fa-copy" aria-hidden="true"></i><span class="contact-card__copy-label">Copy</span>
+      </button>
+    </span>
+  </div>
+</div>
 
 <script>
-(function(){var el=document.getElementById('obf-email');if(el){var u=el.getAttribute('data-u');var a=el.getAttribute('data-a');var d=el.getAttribute('data-d');var addr=u+a+d;el.innerHTML='<a href="ma'+'ilto:'+addr+'">'+addr+'</a>';}})();
+(function(){
+  var el=document.getElementById('obf-email');
+  if(!el)return;
+  var addr=el.getAttribute('data-u')+el.getAttribute('data-a')+el.getAttribute('data-d');
+  el.innerHTML='<a href="ma'+'ilto:'+addr+'"><i class="fa fa-solid fa-envelope" aria-hidden="true"></i>'+addr+'</a>';
+  var btn=document.getElementById('copy-email');
+  if(!btn)return;
+  btn.style.display='';
+  var label=btn.querySelector('.contact-card__copy-label');
+  btn.addEventListener('click',function(){
+    var done=function(){
+      btn.classList.add('copied');
+      if(label)label.textContent='Copied';
+      setTimeout(function(){btn.classList.remove('copied');if(label)label.textContent='Copy';},1600);
+    };
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(addr).then(done);
+    }else{
+      var t=document.createElement('textarea');
+      t.value=addr;document.body.appendChild(t);t.select();
+      document.execCommand('copy');document.body.removeChild(t);done();
+    }
+  });
+})();
 </script>
 
 <h1>News</h1>

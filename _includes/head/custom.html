@@ -46,15 +46,93 @@
 }
 </style>
 
-<!-- Obfuscated email link styling -->
+<!-- Contact card styling -->
 <style>
+.contact-card {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1em 1.1em;
+  background: #f5f8f9;
+  border: 1px solid #dfe7ea;
+  border-left: 4px solid #4a7c8f;
+  border-radius: 8px;
+  padding: 1em 1.3em;
+  margin: 1.5em 0;
+}
+.contact-card__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.7em;
+  height: 2.7em;
+  border-radius: 50%;
+  background: #4a7c8f;
+  color: #fff;
+  font-size: 1em;
+}
+.contact-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  min-width: 0;
+}
+.contact-card__title {
+  font-weight: 600;
+  color: #2c3e45;
+}
+.contact-card__text {
+  color: #5c6b70;
+  font-size: 0.95em;
+}
+.contact-card__email {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6em;
+  margin-top: 0.2em;
+}
 .obf-email-link a {
-  color: #d00;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  background: #fff;
+  border: 1px solid #b9cbd2;
+  border-radius: 999px;
+  padding: 0.32em 0.9em;
+  color: #4a7c8f;
+  font-weight: 600;
+  font-size: 0.95em;
   text-decoration: none;
-  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 .obf-email-link a:hover {
-  text-decoration: underline;
+  background: #4a7c8f;
+  border-color: #4a7c8f;
+  color: #fff;
+  text-decoration: none;
+}
+.contact-card__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  background: transparent;
+  border: 1px solid #cdd9dd;
+  border-radius: 999px;
+  padding: 0.32em 0.85em;
+  color: #5c6b70;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.contact-card__copy:hover {
+  border-color: #4a7c8f;
+  color: #4a7c8f;
+}
+.contact-card__copy.copied {
+  border-color: #62c462;
+  color: #3f9142;
 }
 </style>
 
